@@ -1,16 +1,25 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.sax.TextElementListener;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
+
+import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-//@Autonomous(name="Teaching: Autonomous", group="Tutorials")
+@Autonomous(name="Teaching: Autonomous", group="Tutorials")
 //@Disabled
 public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
@@ -20,7 +29,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     }
 
 
-    private String currentStatus;
     private static final long pauseTimeBetweenSteps = 1000;
 
 
@@ -29,28 +37,41 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         Initialize(hardwareMap, true);
         setDrive(new GTADrive(robot, driverGamePad));
 
-        ComposeTelemetryPreStart();
+        // We can control the number of lines shown in the log
+        telemetry.log().setCapacity(10);
 
+        telemetry.addData("startup", "initializing vuforia");
+        telemetry.update();
         initializeVuforia();
 
-        double speed = 0.85;
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
 
-//        Context context = hardwareMap.appContext;
-//
-//        Config config = new Config(context);
+        telemetry.addData("startup", "vuforia initialized.. waiting for start");
+        telemetry.addData("team", robot.config.getColor().toString());
+        telemetry.addData("position", robot.config.getPosition().toString());
+        telemetry.addData("speed", "%.1f", robot.config.getSpeed());
+        telemetry.update();
+
+        double speed = robot.config.getSpeed();
 
         waitForStart();
 
-        Silver(speed);
+        //drop down
+
+
+        detectParticles();
+
+        //Silver(speed);
+
+
+
 
     }
 
-    void Blue(double speed) {
-
-    }
-    void Red(double speed) {
-
-    }
 
 
 
@@ -76,7 +97,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             {
                 foundImage = true;
 
-                currentStatus = "Found Image and Is Moving";
+                emitStatus("Found Image and Is Moving");
 
                 break;
             }
@@ -87,7 +108,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         drive.stop();
         if(foundImage == false) {
-            currentStatus = "Could not find image";
+            emitStatus("Could not find image");
             return 0;
         }
 
@@ -111,42 +132,39 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     }
 
-
     void Silver2(double speed){
         //driveStraight(speed, 24, 10);
 
         turnDegrees(TurnDirection.COUNTERCLOCKWISE, 90);
     }
 
-    // Main Programming Chunk
-
     void Silver(double speed) {
 
-        currentStatus = "Move out from lander";
+        emitStatus("Move out from lander");
         //move out from lander 2 inches
         driveStraight(speed, 12, 3);
         pause();
 
 
-        currentStatus = "Turn some";
+        emitStatus("Turn some");
         turnDegrees(TurnDirection.COUNTERCLOCKWISE, 90);
         pause();
 
-        currentStatus="Get closer to image";
+        emitStatus("Get closer to image");
         driveStraight(speed, 19, 3);
         pause();
 
         turnDegrees(TurnDirection.CLOCKWISE, 20);
         pause();
 
-        currentStatus = "Turn to face image";
+        emitStatus("Turn to face image");
         //detect image and turn to face image
         double hypotenuse = silver_turn_to_image();
         pause();
 
         if(hypotenuse == 0)
         {
-            currentStatus = "Could not find image";
+            emitStatus("Could not find image");
             return;
         }
 
@@ -198,8 +216,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     }
 
-    //Call Later
-
     void Gold(double speed) {
 
 //        //drive out from lander
@@ -237,7 +253,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     }
 
-
     void driveStraight(double speed, double inches, double timeoutSeconds) {
         encoderDrive(speed, inches, inches, timeoutSeconds, false);
     }
@@ -250,29 +265,57 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         sleep(periodMs);
     }
 
-
-    private void ComposeTelemetryPreStart() {
-
-        telemetry.clearAll();
-
-
-        telemetry.addLine()
-                .addData("Status", currentStatus);
-        telemetry.addLine()
-                .addData("Angle", angle);
-
-//        telemetry.addLine()
-//                .addData("VuMark", new Func<String>() {
-//                    @Override
-//                    public String value() {
-//                        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-//                            return String.format("%s visible", vuMark);
-//                        } else {
-//                            return "not visible";
-//                        }
-//                    }
-//                });
-
-
+    private void emitStatus(String status)
+    {
+        telemetry.log().add(status);
     }
+
+    private void detectParticles() {
+        if (opModeIsActive()) {
+            /** Activate Tensor Flow Object Detection. */
+            if (tfod != null) {
+                tfod.activate();
+            }
+
+            while (opModeIsActive()) {
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        if (updatedRecognitions.size() == 3) {
+                            int goldMineralX = -1;
+                            int silverMineral1X = -1;
+                            int silverMineral2X = -1;
+                            for (Recognition recognition : updatedRecognitions) {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    goldMineralX = (int) recognition.getLeft();
+                                } else if (silverMineral1X == -1) {
+                                    silverMineral1X = (int) recognition.getLeft();
+                                } else {
+                                    silverMineral2X = (int) recognition.getLeft();
+                                }
+                            }
+                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                } else {
+                                    telemetry.addData("Gold Mineral Position", "Center");
+                                }
+                            }
+                        }
+                        telemetry.update();
+                    }
+                }
+            }
+        }
+
+        if (tfod != null) {
+            tfod.shutdown();
+        }
+    }
+
 }

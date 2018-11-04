@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.common.Easing;
 import org.firstinspires.ftc.teamcode.common.FtcGamePad;
 import org.firstinspires.ftc.teamcode.common.IDrive;
@@ -39,6 +40,16 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
 
     protected static final String VUFORIA_KEY = "AeWceoD/////AAAAGWvk7AQGLUiTsyU4mSW7gfldjSCDQHX76lt9iPO5D8zaboG428rdS9WN0+AFpAlc/g4McLRAQIb5+ijFCPJJkLc+ynXYdhljdI2k9R4KL8t3MYk/tbmQ75st9VI7//2vNkp0JHV6oy4HXltxVFcEbtBYeTBJ9CFbMW+0cMNhLBPwHV7RYeNPZRgxf27J0oO8VoHOlj70OYdNYos5wvDM+ZbfWrOad/cpo4qbAw5iB95T5I9D2/KRf1HQHygtDl8/OtDFlOfqK6v2PTvnEbNnW1aW3vPglGXknX+rm0k8b0S7GFJkgl7SLq/HFNl0VEIVJGVQe9wt9PB6bJuxOMMxN4asy4rW5PRRBqasSM7OLl4W";
 
+    protected static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    protected static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    protected static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
+     * Detection engine.
+     */
+    protected TFObjectDetector tfod;
+
+
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     protected static final float mmPerInch        = 25.4f;
@@ -58,8 +69,13 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
 
         this.fourWheelDrive = fourWheelDrive;
         robot = new Robot(hardwareMap, true);
-        driverGamePad = new FtcGamePad("driver", gamepad1);
-        operatorGamePad = new FtcGamePad("operator", gamepad2);
+
+//        driverGamePad = new FtcGamePad("DriverGamepad", gamepad1, this);
+//        operatorGamePad = new FtcGamePad("OperatorGamepad", gamepad2, this);
+
+
+//        driverGamePad = new FtcGamePad("driver", gamepad1, this);
+//        operatorGamePad = new FtcGamePad("operator", gamepad2);
 
     }
 
@@ -202,6 +218,16 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
             ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         }
     }
+    /**
+     * Initialize the Tensor Flow Object Detection engine.
+     */
+    protected void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
 
     public void setDrive(IDrive drive){
         this.drive = drive;
@@ -209,15 +235,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
 
 
     public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees, double speed) {
-//        final double onedegreeticks = 3.4777 * ( 60.0 / 125.0);
-//        final double WHEEL_DIAMETER_INCHES_FOR_TURNING = 3.51;
-//        final double DESIRED_MOVEMENT_TICKS = onedegreeticks * degrees;
-//
-//        double turnInches = (WHEEL_DIAMETER_INCHES_FOR_TURNING * 3.1415) * ( DESIRED_MOVEMENT_TICKS / (robot.REV_COUNTS_PER_MOTOR_REV));
-//        if(direction == Autonomous_Teaching.TurnDirection.CLOCKWISE) {
-//            //maneuver build for counter-clockwise, so reverse
-//            turnInches = -turnInches;
-//        }
+
 
         //robot.COUNTS_PER_INCH
         final double onedegreeticks = 3.04;
@@ -259,8 +277,8 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
 
 
 
-    protected boolean locateVuforiaTarget()
-    {
+
+    protected boolean locateVuforiaTarget() {
         // check all the trackable target to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -380,7 +398,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
                 telemetry.addLine().addData("Current",  "Running at %7d :%7d",
                         currentLeft,
                         currentRight);
-                telemetry.update();
+
             }
 
             if(holdPosition==false) {

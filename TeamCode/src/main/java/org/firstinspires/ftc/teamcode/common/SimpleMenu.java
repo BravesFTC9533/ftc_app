@@ -62,7 +62,7 @@ class Option
         {
             double val = min + (inc*i);
             choices[i] = String.valueOf(val);
-            if(val == start) {
+            if(Math.abs(val - start) < 0.001) {
                 choiceIndex = i;
             }
         }

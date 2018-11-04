@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
@@ -16,7 +17,10 @@ public class Robot {
     public DcMotor motorBackLeft = null;
     public DcMotor motorBackRight = null;
 
+
     public DcMotor motorIntake = null;
+
+    public DcMotor motorLift = null;
 
     private final boolean fourWheelDrive;
 
@@ -30,13 +34,21 @@ public class Robot {
 //    public DcMotor motorArmSlide = null;
 
     public Robot(HardwareMap hardwareMap, boolean fourWheelDrive) {
+        this.config = new Config(hardwareMap.appContext);
+
         motorFrontLeft = hardwareMap.dcMotor.get("Front_Left");
         motorFrontRight = hardwareMap.dcMotor.get("Front_Right");
-
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorLift = hardwareMap.dcMotor.get("Lift_Motor");
+        motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if(config.getLiftReverse()) {
+            motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        }
+
 
         this.fourWheelDrive = fourWheelDrive;
 
@@ -51,7 +63,7 @@ public class Robot {
         }
 
 
-        this.config = new Config(hardwareMap.appContext);
+
     }
 
 
@@ -77,8 +89,7 @@ public class Robot {
         return  setNewPositionFourWheel(inches, inches, inches, inches);
     }
 
-    public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double fl, double fr, double rl, double rr)
-    {
+    public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double fl, double fr, double rl, double rr) {
         Quad<Integer, Integer, Integer, Integer> target = calculateNewPositionsFourWheel(fl, fr, rl, rr);
         motorFrontLeft.setTargetPosition(target.getA());
         motorFrontRight.setTargetPosition(target.getB());
@@ -140,8 +151,7 @@ public class Robot {
 
 
 
-    public void setPower(double left, double right)
-    {
+    public void setPower(double left, double right) {
         motorFrontLeft.setPower(left);
         motorFrontRight.setPower(right);
         if(fourWheelDrive)

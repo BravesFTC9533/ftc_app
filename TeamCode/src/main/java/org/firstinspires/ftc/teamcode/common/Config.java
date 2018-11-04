@@ -10,45 +10,75 @@ import android.content.SharedPreferences;
 
 public class Config {
 
+    private final String COLOR ="color";
+    private final String POSITION ="position";
+    private final String DELAY_START ="delayStart";
+    private final String SPEED = "speed";
+    private final String MAX_LIFT_TICKS = "maxLiftTicks";
+    private final String MAX_LIGHT_BRIGHTNESS = "maxBrightness";
+    private final String LIFT_REVERSE = "liftReverse";
+    private final String SETTINGS_NAME = "robotconfig2";
 
-    public Colors getColor() {
-        return Colors.toColor(sp.getString("color", "RED"));
-    }
 
+    private Colors _color;
+    private Positions _position;
+    private double _delayStart;
+    private double _speed;
+    private int _maxLiftTicks;
+    private double _maxLightBrightness;
+    private boolean _liftReverse;
+
+
+    public Colors getColor() { return _color; }
     public void setColor(Colors color) {
-        sp.edit().putString("color", color.name()).apply();
+        _color = color;
     }
 
-    public Positions getPosition() {
-        return  Positions.toPosition(sp.getString("position", "GOLD"));
-    }
-
+    public Positions getPosition() { return  _position; }
     public void setPosition(Positions position) {
-        sp.edit().putString("position", position.name()).apply();
+        _position = position;
     }
 
     public double getDelayStart() {
-        return sp.getFloat("delayStart", 0);
+        return _delayStart;
     }
-
     public void setDelayStart(double delayStart) {
-        sp.edit().putFloat("delayStart", (float)delayStart).apply();
+        _delayStart = delayStart;
     }
 
-    public double getSpeed() {
-        return sp.getFloat("speed", 0.85f);
-    }
-
+    public double getSpeed() { return _speed;}
     public void setSpeed(double speed) {
-        sp.edit().putFloat("speed", (float)speed).apply();
+        _speed = speed;
     }
 
+    public int getMaxLiftTicks() { return _maxLiftTicks; }
+    public void setMaxLiftTicks(int ticks) {
+        _maxLiftTicks = ticks;
+    }
 
-    public double getMaxLightBrightness() { return  sp.getFloat("maxbrightnes", 0.5f);}
+    public double getMaxLightBrightness() { return  _maxLightBrightness;}
     public void setMaxLightBrightness(double brightness) {
-        sp.edit().putFloat("maxbrightness", (float)brightness).apply();
+        _maxLightBrightness = brightness;
     }
 
+    public boolean getLiftReverse() { return _liftReverse; }
+    public void setLiftReverse(boolean reverse) {
+        _liftReverse = reverse;
+    }
+
+
+    public void save() {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(COLOR, _color.name());
+        editor.putString(POSITION, _position.name());
+        editor.putFloat(DELAY_START, (float)_delayStart);
+        editor.putFloat(SPEED, (float)_speed);
+        editor.putInt(MAX_LIFT_TICKS, _maxLiftTicks);
+        editor.putFloat(MAX_LIGHT_BRIGHTNESS, (float)_maxLightBrightness);
+        editor.putBoolean(LIFT_REVERSE, _liftReverse);
+        editor.commit();
+
+    }
     public enum Colors {
         RED, BLUE;
 
@@ -76,9 +106,17 @@ public class Config {
     SharedPreferences sp;
 
 
+
     public Config(Context context) {
         this.context = context;
-        sp = context.getSharedPreferences("robotconfig", Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(SETTINGS_NAME, Context.MODE_PRIVATE);
+        _color = Colors.toColor(sp.getString(COLOR, "RED"));
+        _position = Positions.toPosition(sp.getString(POSITION, "GOLD"));
+        _delayStart = sp.getFloat(DELAY_START, 0.2f);
+        _speed = sp.getFloat(SPEED, 0.85f);
+        _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 100);
+        _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
+        _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
 
     }
 

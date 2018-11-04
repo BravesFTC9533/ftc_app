@@ -39,9 +39,21 @@ public class AutonomousConfig extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            menu.displayMenu();
+
             config.setDelayStart(Double.parseDouble(menu.getCurrentChoiceOf("Delay Start")));
             config.setSpeed(Double.parseDouble(menu.getCurrentChoiceOf("Speed")));
-            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Version")));
+            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Max Light Brightness")));
+
+
+            switch (menu.getCurrentChoiceOf("Position")) {
+                case "SILVER":
+                    config.setPosition(Config.Positions.SILVER);
+                    break;
+                case "GOLD":
+                    config.setPosition(Config.Positions.GOLD);
+                    break;
+            }
 
             switch (menu.getCurrentChoiceOf("Team")) {
                 case "RED":
@@ -55,17 +67,12 @@ public class AutonomousConfig extends LinearOpMode {
                     break;
             }
 
-            switch (menu.getCurrentChoiceOf("Position")) {
-                case "SILVER":
-                    config.setPosition(Config.Positions.SILVER);
-                    break;
-                case "GOLD":
-                    config.setPosition(Config.Positions.GOLD);
-                    break;
-            }
+
 
             sleep(50);
         }
+
+        config.save();
 
 
     }

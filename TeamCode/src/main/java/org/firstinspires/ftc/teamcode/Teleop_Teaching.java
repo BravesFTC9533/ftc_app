@@ -11,8 +11,14 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Initialize(hardwareMap, true);
+
+        driverGamePad = new FtcGamePad("driver", gamepad1, this);
+        operatorGamePad = new FtcGamePad("operator", gamepad2, this);
+
+        Initialize(hardwareMap, false);
         setDrive(new GTADrive(robot, driverGamePad));
+
+
 
         DcMotor lights = hardwareMap.dcMotor.get("lights");
 
@@ -20,6 +26,9 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
         while(opModeIsActive())
         {
+            driverGamePad.update();
+            operatorGamePad.update();
+
             drive.handle();
 
             double value = operatorGamePad.getRightTrigger();
@@ -34,7 +43,28 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
     @Override
     public void gamepadButtonEvent(FtcGamePad gamepad, int button, boolean pressed) {
 
+        if(gamepad == operatorGamePad) {
+            switch (button) {
+                case FtcGamePad.GAMEPAD_A:
+                    if(pressed) {
+                        robot.motorLift.setPower(1);
+                    }
+                    else {
+                        robot.motorLift.setPower(0);
+                    }
 
+                    break;
+                case FtcGamePad.GAMEPAD_Y:
+                    if(pressed) {
+                        robot.motorLift.setPower(-1);
+                    } else {
+                        robot.motorLift.setPower(0);
+                    }
+
+                    // used for cryptoblock lift
+                    break;
+            }
+        }
 
 
     }
