@@ -27,6 +27,9 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Delay Start", 30, 0, 0.1, config.getDelayStart());
         menu.addOption("Max Light Brightness", 1, 0, 0.05, config.getMaxLightBrightness());
 
+        menu.addOption("TF Y Thresh", 1000, 0, 1, config.getTensorflowYThreshold());
+
+
 
 //        menu.addOption("kP", 1000, 0, 0.01, config.kp);
 //        menu.addOption("kI", 1000, 0, 0.01, config.ki);
@@ -42,6 +45,7 @@ public class AutonomousConfig extends LinearOpMode {
             menu.displayMenu();
 
             config.setDelayStart(Double.parseDouble(menu.getCurrentChoiceOf("Delay Start")));
+            config.setTensorflowYThreshold(Double.parseDouble(menu.getCurrentChoiceOf("TF Y Thresh")));
             config.setSpeed(Double.parseDouble(menu.getCurrentChoiceOf("Speed")));
             config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Max Light Brightness")));
 
