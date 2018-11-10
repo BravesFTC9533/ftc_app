@@ -42,8 +42,8 @@ public class Robot {
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorLift = hardwareMap.dcMotor.get("Lift_Motor");
-        motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+       // motorLift = hardwareMap.dcMotor.get("Lift_Motor");
+       // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if(config.getLiftReverse()) {
             motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
 

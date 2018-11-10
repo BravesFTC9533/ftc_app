@@ -14,6 +14,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 @Autonomous(name="Main: Autonomous", group="Main")
 
 public class Autonomous_Main extends Teaching_BaseLinearOpMode {
+
+    public TensorFlowObjectDetection tfod;
+
     enum TurnDirection {
         CLOCKWISE,
         COUNTERCLOCKWISE
@@ -128,46 +131,50 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
         void Silver(double speed) {
 
-            currentStatus = "Move out from lander";
-            //move out from lander 2 inches
-            driveStraight(0.20, 16, 3);
+        driveStraight(speed, 5, 1);
+        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 25);
+        driveStraight(speed, 5, 3);
 
-        currentStatus = "Turn some";
-        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 10);
-
-        //currentStatus="Get closer to image";
-        //driveStraight(speed, 19, 3);
-
-        //turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 20);
-
-        currentStatus = "Turn to face image";
-        //detect image and turn to face image
-       double adjacent = silver_turn_to_image();
-
-       if(adjacent == 0)
-        {
-           currentStatus = "Could not find image";
-          return;
-        }
-
-      //  currentStatus="Turn to face trophy drop off";
-      // turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 57);
-
-      //  driveStraight(speed, 20, 5);
-
-        //Servo Code Here
-
-        //TODO Put Back In Later
-
-//        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, hypotenuse - 10);
+//        currentStatus = "Move out from lander";
+//        //move out from lander 2 inches
+//        driveStraight(speed, 16, 3);
 //
-//        //Move Back To Get In Line With Image
+//        currentStatus = "Turn some";
+//        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 10);
+//
+//        currentStatus="Get closer to image";
+//        driveStraight(speed, 19, 3);
+//
+//        turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 20);
+//
+//        currentStatus = "Turn to face image";
+//        //detect image and turn to face image
+//       double adjacent = silver_turn_to_image();
+//
+//       if(adjacent == 0)
+//        {
+//           currentStatus = "Could not find image";
+//          return;
+//        }
+//
+//      //  currentStatus="Turn to face trophy drop off";
+//      // turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 57);
+//
+//      //  driveStraight(speed, 20, 5);
+//
+//        //Servo Code Here
+//
+//        //TODO Put Back In Later
+//
+//        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, adjacent - 10);
+////
+////        //Move Back To Get In Line With Image
 //        driveStraight(speed, -15.4343, 3);
-//
-//        //Turn to see Image
+////
+////        //Turn to see Image
 //        turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 95);
-//
-//        //Move back to see objects
+////
+////        //Move back to see objects
 //        driveStraight(speed, -15, 3);
 
         //Wait After for Testing Only

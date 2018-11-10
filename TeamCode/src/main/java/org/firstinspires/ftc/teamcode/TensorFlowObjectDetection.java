@@ -57,7 +57,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @TeleOp(name = "Test: TensorFlow Object Detection", group = "Test")
 
 public class TensorFlowObjectDetection extends LinearOpMode {
-    private int goldBlockPosition = 0;
+
+    private Autonomous_Main am;
+
+    public int goldBlockPosition = 0;
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -161,6 +164,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                     }
                   }
                   telemetry.update();
+                    am.driveStraight(0.1, 0.5, 3);
                 }
             }
         }
@@ -197,7 +201,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     /**
      * Initialize the Tensor Flow Object Detection engine.
      */
-    private void initTfod() {
+    public void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
