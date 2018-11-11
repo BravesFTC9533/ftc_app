@@ -141,7 +141,7 @@ public class Config {
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
         _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
-        _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "LEFT"));
+        _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "RIGHT"));
 
     }
 

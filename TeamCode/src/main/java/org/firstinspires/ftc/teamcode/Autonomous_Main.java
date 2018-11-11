@@ -5,7 +5,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -15,31 +20,51 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
+    private int goldBlockPosition = 0;
+
     enum TurnDirection {
         CLOCKWISE,
         COUNTERCLOCKWISE
     }
 
-    private Boolean hold;
-    private String currentStatus; //The current status of the robot, what position it should be doing.
-    private static final long pauseTimeBetweenSteps = 1000; //The pause between every steps is 1 second
+    enum GoldPosition {
+        LEFT,
+        RIGHT,
+        CENTER,
+        UNKNOWN
+    }
+
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";private String currentStatus; //The current status of the robot, what position it should be doing.
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";private static final long pauseTimeBetweenSteps = 1000; //The pause between every steps is 1 second
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Initialize(hardwareMap, true); //Four wheel drive is true meaning that it will run a four wheel drive
+
+        // We can control the number of lines shown in the log
+        telemetry.log().setCapacity(10);
+
+
+        telemetry.log().add("Setting up hardware");
+        telemetry.update();
+        Initialize(hardwareMap, false); //Four wheel drive is true meaning that it will run a four wheel drive
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
-        ComposeTelemetryPreStart();
+        //ComposeTelemetryPreStart();
 
+        telemetry.log().add("Setting up vuforia");
+        telemetry.update();
         initializeVuforia();
+        telemetry.log().add("Setting up tfod");
+        telemetry.update();
+        initTfod();
 
         double speed = 0.65;
 
 
-//        Context context = hardwareMap.appContext;
-//
-//        Config config = new Config(context);
+
+        telemetry.log().add("Completed Initialization. You can start Robot!");
+        telemetry.update();
 
         waitForStart();
 
@@ -47,12 +72,6 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
     }
 
-    void Blue(double speed) {
-
-    }
-    void Red(double speed) {
-
-    }
 
 
 
@@ -89,6 +108,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
             }
         }
 
+
         drive.stop();
         if(foundImage == false) {
             currentStatus = "Could not find image";
@@ -118,146 +138,104 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
     }
 
 
-    void Silver2(double speed) {
-        driveStraight(speed, 24, 10);
-
-        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 0);
-
-    }
 
     // Main Programming Chunk
 
-        void Silver(double speed) {
+    void Silver(double speed) {
+        //TODO Start off with Tensor Flow and check to see where gold object is
+        telemetry.log().add("Turning on lights");
+        robot.toggleLights();
+        //telemetry.log().add("Lights on (%0.2f)", robot.lights.getPower());
+        GoldPosition gp = DetectObjects(speed);
+        telemetry.log().add("Turning off lights");
+        robot.toggleLights();
+        goldPosition(gp, speed);
 
-//        currentStatus = "Move out from lander";
-//        //move out from lander 2 inches
-//        driveStraight(speed, 16, 3);
-//
-//        currentStatus = "Turn some";
-//        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 10);
-//
-//        currentStatus="Get closer to image";
-//        driveStraight(speed, 19, 3);
-//
-//        turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 20);
-//
-//        currentStatus = "Turn to face image";
-//        //detect image and turn to face image
-//       double adjacent = silver_turn_to_image();
-//
-//       if(adjacent == 0)
-//        {
-//           currentStatus = "Could not find image";
-//          return;
-//        }
-//
-//      //  currentStatus="Turn to face trophy drop off";
-//      // turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 57);
-//
-//      //  driveStraight(speed, 20, 5);
-//
-//        //Servo Code Here
-//
-//        //TODO Put Back In Later
-//
-//        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, adjacent - 10);
-////
-////        //Move Back To Get In Line With Image
-//        driveStraight(speed, -15.4343, 3);
-////
-////        //Turn to see Image
-//        turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 95);
-////
-////        //Move back to see objects
-//        driveStraight(speed, -15, 3);
+        //TODO Move towards the object and push it off the red square
 
-        //Wait After for Testing Only
-        //TODO Remove After Testing
-        waitForTick(100000);
-//        double distaneToDriveToImage = hypotenuse - 40;
-//        driveStraight(speed, distaneToDriveToImage, 5);
-
-        //drive to image staying off wall about 10 inches
-//        double distanceToDriveToImage = hypotenuse - 20;
-//        currentStatus = "Drive to image wall";
-//        driveStraight(speed, distanceToDriveToImage, 5);
-//
-//
-//        currentStatus = "Turn towards depot";
-//        //turn towards depot
-//        double new_angle = 90 - angle;
-//        turnDegrees(TurnDirection.COUNTERCLOCKWISE, new_angle);
-//
-//
-//        currentStatus = "Move to depot";
-//        //calculate new movement and move to depot
-//        double new_x = 20*Math.sin(angle);
-//        double distance_to_depot_wall = (6*12) + new_x;
-//        double move_to_depot_wall = distance_to_depot_wall - 15;
-//        driveStraight(speed, move_to_depot_wall, 5);
-//
-
-
-//
-//        driveStraight(speed, 14, 5);
-//        pause();
-//
-//        //turn left
-//        turn90(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(speed, 44, 5);
-//        pause();
-//
-//        turn45(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(speed, 57, 5);
-//        pause();
-//
-//        driveStraight(1, -86, 20);
-//        pause();
-
-
+        //TODO Drive into the depot making sure to be compatible with what side of the field we are on
     }
 
     //Call Later
 
-    void Gold(double speed) {
+    void goldPosition(GoldPosition gp, double speed) {
+        if(gp == GoldPosition.LEFT) {
+            turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 37);
+            driveStraight(speed, 25, 2);
+        } else if (gp == GoldPosition.RIGHT) {
+            turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 37);
+            driveStraight(speed, 25, 2);
+        } else if (gp == GoldPosition.CENTER) {
+            driveStraight(speed, 25, 2);
+        }
+    }
 
-//        //drive out from lander
-//        driveStraight(speed, 14, 5);
-//        pause();
-//
-//        //turn left
-//        turn90(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        //drive forward 24 inches
-//        driveStraight(speed, 24, 5);
-//        pause();
-//
-//        //turn to face wall
-//        turn45(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
-//        //drive to wall, stopping at least 10 inches short
-//        driveStraight(speed, 15, 5);
-//        pause();
-//
-//        turn90(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(1, 48, 20);
-//        pause();
-//
-//        driveStraight(1, -76, 20);
-//        pause();
+    private GoldPosition DetectObjects (double speed) {
+        if (opModeIsActive()) {
+            /** Activate Tensor Flow Object Detection. */
+            if (tfod != null) {
+                tfod.activate();
+            }
 
-//        turn90(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
+            while (opModeIsActive()) {
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    List<Recognition> ourCollection = new ArrayList<>();
 
+                    if (updatedRecognitions != null) {
+                        telemetry.addData("# Total Object Detected", updatedRecognitions.size());
+                        telemetry.addData("# Of Objects At The Bottom", ourCollection.size());
+                        for (Recognition recognition : updatedRecognitions) {
+                            if ((double) recognition.getTop() > robot.config.getTensorflowYThreshold()) {
+                                ourCollection.add(recognition);
+                                telemetry.addData("Distance to top of screen", recognition.getTop());
+                            }
+                        }
+
+                        int goldMineralX = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral2X = -1;
+                        for (Recognition recognition : updatedRecognitions) {
+
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                goldMineralX = (int) recognition.getLeft();
+                            } else if (silverMineral1X == -1) {
+                                silverMineral1X = (int) recognition.getLeft();
+                            } else {
+                                silverMineral2X = (int) recognition.getLeft();
+                            }
+                        }
+                        if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                            if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                if (robot.config.getPHONEOREANTATION() == Config.Oreantation.RIGHT) {
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                    return GoldPosition.LEFT;
+                                } else if (robot.config.getPHONEOREANTATION() == Config.Oreantation.LEFT) {
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                    return GoldPosition.RIGHT;
+                                }
+                            } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                if (robot.config.getPHONEOREANTATION() == Config.Oreantation.RIGHT) {
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                    return GoldPosition.RIGHT;
+                                } else if (robot.config.getPHONEOREANTATION() == Config.Oreantation.LEFT) {
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                    return GoldPosition.LEFT;
+                                }
+
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Center");
+                                return GoldPosition.CENTER;
+                            }
+                        }
+                    }
+                    telemetry.update();
+                }
+            }
+        }
+        return GoldPosition.UNKNOWN;
     }
 
 

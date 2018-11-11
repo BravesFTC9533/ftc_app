@@ -17,6 +17,9 @@ public class Robot {
     public DcMotor motorBackLeft = null;
     public DcMotor motorBackRight = null;
 
+    public DcMotor lights = null;
+
+    private boolean lightsOn;
 
     public DcMotor motorIntake = null;
 
@@ -41,6 +44,7 @@ public class Robot {
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lights = hardwareMap.dcMotor.get("lights");
 
        // motorLift = hardwareMap.dcMotor.get("Lift_Motor");
        // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -82,6 +86,15 @@ public class Robot {
         int rlTarget = motorBackLeft.getCurrentPosition() + (int)(rl * COUNTS_PER_INCH);
         int rrTarget = motorBackRight.getCurrentPosition() + (int)(rr * COUNTS_PER_INCH);
         return new Quad<>(flTarget, frTarget, rlTarget, rrTarget);
+    }
+
+    public void toggleLights() {
+        if(Math.abs(lights.getPower()) > 0) {
+
+            lights.setPower(0);
+        } else {
+            lights.setPower(config.getMaxLightBrightness());
+        }
     }
 
 

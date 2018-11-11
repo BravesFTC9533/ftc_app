@@ -25,7 +25,8 @@ public class Autonomous_Test extends Teaching_BaseLinearOpMode {
     private String currentStatus;
     private static final long pauseTimeBetweenSteps = 1000;
 
-    Servo trophyArm;
+    // TODO add later
+    // Servo trophyArm;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -125,7 +126,7 @@ public class Autonomous_Test extends Teaching_BaseLinearOpMode {
     // Main Programming Chunk
 
     void Silver(double speed) {
-        trophyArm.setPosition(1.0);
+        //trophyArm.setPosition(1.0);
 
     }
 

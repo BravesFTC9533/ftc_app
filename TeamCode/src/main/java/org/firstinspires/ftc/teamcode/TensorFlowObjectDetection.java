@@ -57,7 +57,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @TeleOp(name = "Test: TensorFlow Object Detection", group = "Test")
 
 public class TensorFlowObjectDetection extends LinearOpMode  {
-
     public int goldBlockPosition = 0;
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
