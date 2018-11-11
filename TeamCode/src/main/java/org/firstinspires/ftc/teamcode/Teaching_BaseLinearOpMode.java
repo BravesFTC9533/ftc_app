@@ -72,7 +72,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
     public void Initialize(HardwareMap hardwareMap, boolean fourWheelDrive) {
 
         this.fourWheelDrive = fourWheelDrive;
-        robot = new Robot(hardwareMap, true);
+        robot = new Robot(hardwareMap, false);
 
 //        driverGamePad = new FtcGamePad("DriverGamepad", gamepad1, this);
 //        operatorGamePad = new FtcGamePad("OperatorGamepad", gamepad2, this);
