@@ -56,9 +56,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 @TeleOp(name = "Test: TensorFlow Object Detection", group = "Test")
 
-public class TensorFlowObjectDetection extends LinearOpMode {
-
-    private Autonomous_Main am;
+public class TensorFlowObjectDetection extends LinearOpMode  {
 
     public int goldBlockPosition = 0;
 
@@ -152,19 +150,30 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                     }
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                       if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                        telemetry.addData("Gold Mineral Position", "Left");
-                        goldBlockPosition = 1;
+                          if (config.getPHONEOREANTATION() == Config.Oreantation.RIGHT) {
+                              telemetry.addData("Gold Mineral Position", "Left");
+                              goldBlockPosition = 1;
+                          } else if (config.getPHONEOREANTATION() == Config.Oreantation.LEFT) {
+                              telemetry.addData("Gold Mineral Position", "Right");
+                              goldBlockPosition = 3;
+                          }
                       } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                        telemetry.addData("Gold Mineral Position", "Right");
-                        goldBlockPosition = 2;
+                          if (config.getPHONEOREANTATION() == Config.Oreantation.RIGHT) {
+                              telemetry.addData("Gold Mineral Position", "Right");
+                              goldBlockPosition = 3;
+                          } else if (config.getPHONEOREANTATION() == Config.Oreantation.LEFT) {
+                            telemetry.addData("Gold Mineral Position", "Left");
+                            goldBlockPosition = 1;
+                          }
+
                       } else {
                         telemetry.addData("Gold Mineral Position", "Center");
-                        goldBlockPosition = 3;
+
+                        goldBlockPosition = 1;
                       }
                     }
                   }
                   telemetry.update();
-                    am.driveStraight(0.1, 0.5, 3);
                 }
             }
         }

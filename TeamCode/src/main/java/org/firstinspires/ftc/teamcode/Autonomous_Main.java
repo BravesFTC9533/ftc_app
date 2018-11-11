@@ -15,8 +15,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
-    public TensorFlowObjectDetection tfod;
-
     enum TurnDirection {
         CLOCKWISE,
         COUNTERCLOCKWISE
@@ -130,10 +128,6 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
     // Main Programming Chunk
 
         void Silver(double speed) {
-
-        driveStraight(speed, 5, 1);
-        turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 25);
-        driveStraight(speed, 5, 3);
 
 //        currentStatus = "Move out from lander";
 //        //move out from lander 2 inches

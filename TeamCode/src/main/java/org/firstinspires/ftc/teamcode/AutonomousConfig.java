@@ -28,7 +28,7 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Max Light Brightness", 1, 0, 0.05, config.getMaxLightBrightness());
 
         menu.addOption("TF Y Thresh", 1000, 0, 1, config.getTensorflowYThreshold());
-
+        menu.addOption("Oreantation", Config.Oreantation.class, config.getPHONEOREANTATION());
 
 
 //        menu.addOption("kP", 1000, 0, 0.01, config.kp);

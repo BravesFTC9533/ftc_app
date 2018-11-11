@@ -18,7 +18,7 @@ public class Config {
     private final String MAX_LIGHT_BRIGHTNESS = "maxBrightness";
     private final String LIFT_REVERSE = "liftReverse";
     private final String SETTINGS_NAME = "robotconfig2";
-
+    private final String PHONEOREANTATION = "phoneOreantation";
     private final String TENSORFLOW_Y_THRESHOLD = "F_tensorFlowYThreshold";
 
     private Colors _color;
@@ -26,10 +26,14 @@ public class Config {
     private double _delayStart;
     private double _speed;
     private int _maxLiftTicks;
+    private Oreantation _phoneOreantation;
     private double _tensorFlowYThreshold;
     private double _maxLightBrightness;
     private boolean _liftReverse;
 
+
+    public Oreantation getPHONEOREANTATION () { return _phoneOreantation; }
+    public void setPHONEOREANTATION (Oreantation oreantation) { _phoneOreantation = oreantation; }
 
     public double getTensorflowYThreshold () { return _tensorFlowYThreshold; }
     public void setTensorflowYThreshold (double value) {_tensorFlowYThreshold = value;}
@@ -82,6 +86,7 @@ public class Config {
         editor.putFloat(MAX_LIGHT_BRIGHTNESS, (float)_maxLightBrightness);
         editor.putBoolean(LIFT_REVERSE, _liftReverse);
         editor.putFloat(TENSORFLOW_Y_THRESHOLD, (float) _tensorFlowYThreshold);
+        editor.putString(PHONEOREANTATION, _phoneOreantation.name());
 
         editor.commit();
 
@@ -94,6 +99,17 @@ public class Config {
                 return valueOf(color);
             } catch(Exception ex) {
                 return  RED;
+            }
+        }
+    }
+    public enum Oreantation {
+        LEFT, RIGHT;
+
+        public static Oreantation toOreantation(String oreantation) {
+            try {
+                return valueOf(oreantation);
+            } catch(Exception ex) {
+                return  LEFT;
             }
         }
     }
@@ -125,6 +141,7 @@ public class Config {
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
         _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
+        _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "LEFT"));
 
     }
 
