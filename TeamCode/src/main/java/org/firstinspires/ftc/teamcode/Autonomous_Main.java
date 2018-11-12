@@ -63,7 +63,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
         double speed = 0.65;
 
-        telemetry.log().add("Completed Initialization. You can start Robot!");
+        telemetry.log().add("Completed Initialization. Lets win the Championship!!");
         telemetry.update();
 
         waitForStart();
