@@ -34,36 +34,37 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Initialize(hardwareMap, true);
+        Initialize(hardwareMap, false);
         setDrive(new GTADrive(robot, driverGamePad));
 
-        // We can control the number of lines shown in the log
-        telemetry.log().setCapacity(10);
-
-        telemetry.addData("startup", "initializing vuforia");
-        telemetry.update();
-        initializeVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-
-        telemetry.addData("startup", "vuforia initialized.. waiting for start");
-        telemetry.addData("team", robot.config.getColor().toString());
-        telemetry.addData("position", robot.config.getPosition().toString());
-        telemetry.addData("speed", "%.1f", robot.config.getSpeed());
-        telemetry.update();
-
-        double speed = robot.config.getSpeed();
+//        // We can control the number of lines shown in the log
+//        telemetry.log().setCapacity(10);
+//
+//        telemetry.addData("startup", "initializing vuforia");
+//        telemetry.update();
+//        initializeVuforia();
+//
+//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+//            initTfod();
+//        } else {
+//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+//        }
+//
+//        telemetry.addData("startup", "vuforia initialized.. waiting for start");
+//        telemetry.addData("team", robot.config.getColor().toString());
+//        telemetry.addData("position", robot.config.getPosition().toString());
+//        telemetry.addData("speed", "%.1f", robot.config.getSpeed());
+//        telemetry.update();
+//
+//        double speed = robot.config.getSpeed();
 
         waitForStart();
 
         //drop down
 
+        driveStraight(.5, 24, 10);
 
-        detectParticles();
+        //detectParticles();
 
         //Silver(speed);
 

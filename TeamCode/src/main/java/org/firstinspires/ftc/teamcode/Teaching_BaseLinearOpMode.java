@@ -72,7 +72,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
     public void Initialize(HardwareMap hardwareMap, boolean fourWheelDrive) {
 
         this.fourWheelDrive = fourWheelDrive;
-        robot = new Robot(hardwareMap, false);
+        robot = new Robot(hardwareMap, fourWheelDrive);
 
 //        driverGamePad = new FtcGamePad("DriverGamepad", gamepad1, this);
 //        operatorGamePad = new FtcGamePad("OperatorGamepad", gamepad2, this);
@@ -92,10 +92,10 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY ;
         parameters.cameraDirection   = CAMERA_CHOICE;
@@ -256,10 +256,10 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         if(direction == Autonomous_Teaching.TurnDirection.CLOCKWISE) {
             turnInches = -turnInches;
         }
-        encoderDrive(0.75, -turnInches, turnInches, 10.0, false);
+        encoderDrive(speed, -turnInches, turnInches, 5.0, false);
     }
     public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees) {
-        turnDegrees(direction, degrees, 0.5);
+        turnDegrees(direction, degrees, 0.6);
     }
 
 

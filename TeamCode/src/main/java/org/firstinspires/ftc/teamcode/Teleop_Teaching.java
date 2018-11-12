@@ -20,7 +20,7 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
 
 
-        DcMotor lights = hardwareMap.dcMotor.get("lights");
+        //DcMotor lights = hardwareMap.dcMotor.get("lights");
 
         waitForStart();
 
@@ -31,9 +31,9 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
             drive.handle();
 
-            double value = operatorGamePad.getRightTrigger();
-            value = Math.min(robot.config.getMaxLightBrightness(), value);
-            lights.setPower(value);
+//            double value = operatorGamePad.getRightTrigger();
+//            value = Math.min(robot.config.getMaxLightBrightness(), value);
+            //lights.setPower(value);
         }
 
         robot.stop();
