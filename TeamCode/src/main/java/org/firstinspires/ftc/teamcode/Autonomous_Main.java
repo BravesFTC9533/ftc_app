@@ -171,7 +171,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
     void goldPosition(GoldPosition gp, double speed) {
         driveStraight(speed, 4, 2);
         if(gp == GoldPosition.LEFT) {
-            turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 80);
+            turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, robot.config.get_initialTurnDegreesCounterClockwise());
             pause();
             driveStraight(speed, 28, 4);
             pause();
@@ -179,7 +179,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
             pause();
             driveStraight(speed, 10, 2);
         } else if (gp == GoldPosition.RIGHT) {
-            turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 80);
+            turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, robot.config.get_initialTurnDegreesClockwise());
             pause();
             driveStraight(speed, 28, 4);
             pause();
