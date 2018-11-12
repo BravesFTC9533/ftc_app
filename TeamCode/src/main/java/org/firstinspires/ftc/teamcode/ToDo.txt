@@ -1,0 +1,5 @@
+//TODO when the builders finish the graber program the motor to move when told to
+after getting the minarals we have to get it into the depo
+//TODO must scan to see where the depo is so it can put down trophy.
+TODO MUST PUT PLATE FOR ROBOT TO PUSH OBJECTS OFF ORIGINAL POSITION.
+
