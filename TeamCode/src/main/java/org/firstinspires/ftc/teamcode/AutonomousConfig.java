@@ -28,8 +28,12 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Max Light Brightness", 1, 0, 0.05, config.getMaxLightBrightness());
 
         menu.addOption("TF Y Thresh", 1000, 0, 1, config.getTensorflowYThreshold());
-        menu.addOption("Oreantation", Config.Oreantation.class, config.getPHONEOREANTATION());
 
+        //not currently using this
+        //menu.addOption("Oreantation", Config.Oreantation.class, config.getPHONEOREANTATION());
+
+        menu.addOption("Initial Turn CW", 90, 0, 1, config.get_initialTurnDegreesClockwise());
+        menu.addOption("Initial Turn CCW", 90, 0, 1, config.get_initialTurnDegreesCounterClockwise());
 
 //        menu.addOption("kP", 1000, 0, 0.01, config.kp);
 //        menu.addOption("kI", 1000, 0, 0.01, config.ki);
@@ -48,6 +52,9 @@ public class AutonomousConfig extends LinearOpMode {
             config.setTensorflowYThreshold(Double.parseDouble(menu.getCurrentChoiceOf("TF Y Thresh")));
             config.setSpeed(Double.parseDouble(menu.getCurrentChoiceOf("Speed")));
             config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Max Light Brightness")));
+
+            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CW")));
+            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CCW")));
 
 
             switch (menu.getCurrentChoiceOf("Position")) {

@@ -254,7 +254,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
                         } else if(updatedRecognitions.size() == 2) {
                             missingDetectionCounter++;
                             telemetry.log().add("Missing Detection Count: %d", missingDetectionCounter);
-                            if(missingDetectionCounter > 5) {
+                            if(missingDetectionCounter > 10) {
 
                                 missingDetectionCounter = 0;
                                 int total = 0;
@@ -278,6 +278,9 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
                     }
                     telemetry.update();
                 }
+            }
+            if(tfod != null) {
+                tfod.deactivate();
             }
         }
         return GoldPosition.UNKNOWN;

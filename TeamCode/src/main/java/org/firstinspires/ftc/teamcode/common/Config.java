@@ -21,6 +21,9 @@ public class Config {
     private final String PHONEOREANTATION = "phoneOreantation";
     private final String TENSORFLOW_Y_THRESHOLD = "F_tensorFlowYThreshold";
 
+    private final String INITIAL_TURN_CLOCKWISE = "initial_turn_clockwise";
+    private final String INITIAL_TURN_COUNTERCLOCKWISE = "initial_turn_counterclockwise";
+
     private Colors _color;
     private Positions _position;
     private double _delayStart;
@@ -30,6 +33,9 @@ public class Config {
     private double _tensorFlowYThreshold;
     private double _maxLightBrightness;
     private boolean _liftReverse;
+
+    private double _initialTurnDegreesCounterClockwise;
+    private double _initialTurnDegreesClockwise;
 
 
     public Oreantation getPHONEOREANTATION () { return _phoneOreantation; }
@@ -88,9 +94,28 @@ public class Config {
         editor.putFloat(TENSORFLOW_Y_THRESHOLD, (float) _tensorFlowYThreshold);
         editor.putString(PHONEOREANTATION, _phoneOreantation.name());
 
+        editor.putFloat(INITIAL_TURN_CLOCKWISE, (float)_initialTurnDegreesClockwise);
+        editor.putFloat(INITIAL_TURN_COUNTERCLOCKWISE, (float)_initialTurnDegreesCounterClockwise);
         editor.commit();
 
     }
+
+    public double get_initialTurnDegreesCounterClockwise() {
+        return _initialTurnDegreesCounterClockwise;
+    }
+
+    public void set_initialTurnDegreesCounterClockwise(double _initialTurnDegreesCounterClockwise) {
+        this._initialTurnDegreesCounterClockwise = _initialTurnDegreesCounterClockwise;
+    }
+
+    public double get_initialTurnDegreesClockwise() {
+        return _initialTurnDegreesClockwise;
+    }
+
+    public void set_initialTurnDegreesClockwise(double _initialTurnDegreesClockwise) {
+        this._initialTurnDegreesClockwise = _initialTurnDegreesClockwise;
+    }
+
     public enum Colors {
         RED, BLUE;
 
@@ -142,6 +167,10 @@ public class Config {
         _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
         _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "RIGHT"));
+
+        _initialTurnDegreesClockwise = sp.getFloat(INITIAL_TURN_CLOCKWISE, 70);
+        _initialTurnDegreesCounterClockwise = sp.getFloat(INITIAL_TURN_COUNTERCLOCKWISE, 70);
+
 
     }
 
