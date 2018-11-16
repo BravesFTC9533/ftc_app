@@ -19,6 +19,7 @@ public class Config {
     private final String LIFT_REVERSE = "liftReverse";
     private final String SETTINGS_NAME = "robotconfig2";
     private final String PHONEOREANTATION = "phoneOreantation";
+    private final String ROBOTSPECS = "robotSpecs";
     private final String TENSORFLOW_Y_THRESHOLD = "F_tensorFlowYThreshold";
 
     private final String INITIAL_TURN_CLOCKWISE = "initial_turn_clockwise";
@@ -30,6 +31,7 @@ public class Config {
     private double _speed;
     private int _maxLiftTicks;
     private Oreantation _phoneOreantation;
+    private RobotSpecs _robotSpecs;
     private double _tensorFlowYThreshold;
     private double _maxLightBrightness;
     private boolean _liftReverse;
@@ -43,6 +45,9 @@ public class Config {
 
     public double getTensorflowYThreshold () { return _tensorFlowYThreshold; }
     public void setTensorflowYThreshold (double value) {_tensorFlowYThreshold = value;}
+
+    public RobotSpecs getROBOTSPECS () { return _robotSpecs; }
+    public void setROBOTSPECS (RobotSpecs robotspecs) {_robotSpecs = robotspecs;};
 
     public Colors getColor() { return _color; }
     public void setColor(Colors color) {
@@ -93,7 +98,7 @@ public class Config {
         editor.putBoolean(LIFT_REVERSE, _liftReverse);
         editor.putFloat(TENSORFLOW_Y_THRESHOLD, (float) _tensorFlowYThreshold);
         editor.putString(PHONEOREANTATION, _phoneOreantation.name());
-
+        editor.putString(ROBOTSPECS, _robotSpecs.name());
         editor.putFloat(INITIAL_TURN_CLOCKWISE, (float)_initialTurnDegreesClockwise);
         editor.putFloat(INITIAL_TURN_COUNTERCLOCKWISE, (float)_initialTurnDegreesCounterClockwise);
         editor.commit();
@@ -124,6 +129,18 @@ public class Config {
                 return valueOf(color);
             } catch(Exception ex) {
                 return  RED;
+            }
+        }
+    }
+
+    public enum RobotSpecs {
+        TEST, REAL;
+
+        public static RobotSpecs toSpecs(String specs) {
+            try {
+                return valueOf(specs);
+            } catch(Exception e) {
+                return TEST;
             }
         }
     }
@@ -166,8 +183,10 @@ public class Config {
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
         _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
-        _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "RIGHT"));
-
+        //TODO change to right for robot for competition.
+        _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "LEFT"));
+        //TODO change to REAL for robot for competition
+        _robotSpecs = RobotSpecs.toSpecs(sp.getString(ROBOTSPECS, "TEST"));
         _initialTurnDegreesClockwise = sp.getFloat(INITIAL_TURN_CLOCKWISE, 70);
         _initialTurnDegreesCounterClockwise = sp.getFloat(INITIAL_TURN_COUNTERCLOCKWISE, 70);
 

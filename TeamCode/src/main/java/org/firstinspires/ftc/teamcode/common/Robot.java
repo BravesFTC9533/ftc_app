@@ -44,7 +44,10 @@ public class Robot {
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lights = hardwareMap.dcMotor.get("lights");
+
+        if(config.getROBOTSPECS() == Config.RobotSpecs.REAL) {
+            lights = hardwareMap.dcMotor.get("lights");
+        }
 
         motorLift = hardwareMap.dcMotor.get("Lift_Motor");
        // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -89,11 +92,13 @@ public class Robot {
     }
 
     public void toggleLights() {
-        if(Math.abs(lights.getPower()) > 0) {
+        if(config.getROBOTSPECS() == Config.RobotSpecs.REAL) {
+            if (Math.abs(lights.getPower()) > 0) {
 
-            lights.setPower(0);
-        } else {
-            lights.setPower(config.getMaxLightBrightness());
+                lights.setPower(0);
+            } else {
+                lights.setPower(config.getMaxLightBrightness());
+            }
         }
     }
 
