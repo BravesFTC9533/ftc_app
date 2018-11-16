@@ -73,9 +73,6 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
     }
 
-
-
-
     double angle = 0;
 
     double silver_turn_to_image() {

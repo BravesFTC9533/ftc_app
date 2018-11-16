@@ -28,9 +28,9 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Max Light Brightness", 1, 0, 0.05, config.getMaxLightBrightness());
 
         menu.addOption("TF Y Thresh", 1000, 0, 1, config.getTensorflowYThreshold());
+        menu.addOption("Oreantation", Config.Oreantation.class, config.getPHONEOREANTATION());
 
-        //not currently using this
-        //menu.addOption("Oreantation", Config.Oreantation.class, config.getPHONEOREANTATION());
+        menu.addOption("What Robot?", Config.RobotSpecs.class, config.getROBOTSPECS());
 
         menu.addOption("Initial Turn CW", 90, 0, 1, config.get_initialTurnDegreesClockwise());
         menu.addOption("Initial Turn CCW", 90, 0, 1, config.get_initialTurnDegreesCounterClockwise());
@@ -55,7 +55,6 @@ public class AutonomousConfig extends LinearOpMode {
 
             config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CW")));
             config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CCW")));
-
 
             switch (menu.getCurrentChoiceOf("Position")) {
                 case "SILVER":

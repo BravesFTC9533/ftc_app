@@ -92,14 +92,13 @@ public class Robot {
     }
 
     public void toggleLights() {
-        if(config.getROBOTSPECS() == Config.RobotSpecs.REAL) {
-            if (Math.abs(lights.getPower()) > 0) {
+        if (Math.abs(lights.getPower()) > 0) {
 
-                lights.setPower(0);
-            } else {
-                lights.setPower(config.getMaxLightBrightness());
-            }
+            lights.setPower(0);
+        } else {
+            lights.setPower(config.getMaxLightBrightness());
         }
+
     }
 
 
