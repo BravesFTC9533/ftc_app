@@ -47,7 +47,9 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
             switch (button) {
                 case FtcGamePad.GAMEPAD_X:
                     if(pressed) {
-                        robot.togglePicker();
+                        robot.motorPicker.setPower(1);
+                    } else {
+                        robot.motorPicker.setPower(0);
                     }
                     break;
                 case FtcGamePad.GAMEPAD_DPAD_UP:

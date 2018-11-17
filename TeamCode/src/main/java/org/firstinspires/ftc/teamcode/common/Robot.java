@@ -122,14 +122,7 @@ public class Robot {
 
     }
 
-    public void togglePicker () {
-        if(Math.abs(motorPicker.getPower()) > 0) {
-            motorPicker.setPower(0);
-        } else {
-            motorPicker.setPower(1);
-        }
-    }
-
+    //TODO Fix toggle for Left and Right
     public void toggleBox (Box box) {
         if (box == Box.LEFT) {
             if(boxLeft.getPosition() > 0) {
