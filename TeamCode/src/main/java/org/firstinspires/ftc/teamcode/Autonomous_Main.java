@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.support.annotation.Nullable;
+import android.util.Range;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.Pif;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
@@ -68,7 +72,21 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
         waitForStart();
 
-        Silver(speed);
+        if(robot.config.getDelayStart() > 0) {
+            ElapsedTime timer = new ElapsedTime();
+            while(opModeIsActive() && timer.seconds() < robot.config.getDelayStart()) {
+                idle();
+            }
+        }
+
+        switch (robot.config.getPosition()){
+            case SILVER:
+                Silver(speed);
+                break;
+            case GOLD:
+                Gold(speed);
+        }
+
 
 
     }
@@ -138,6 +156,11 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
 
 
+    void Gold(double speed) {
+
+    }
+
+
     // Main Programming Chunk
 
     void Silver(double speed) {
@@ -191,6 +214,119 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
             pause();
         }
     }
+
+
+
+    private boolean SweepAcrossObjects(double speed, double timeoutS){
+
+        ElapsedTime timer = new ElapsedTime();
+
+        if(opModeIsActive()){
+
+            if(!activateTFOD())
+            {
+                return false;
+            }
+            Recognition gold = null;
+
+            while(opModeIsActive() && timer.seconds() < timeoutS) {
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if(updatedRecognitions == null) {
+                    idle();
+                }
+
+                int found = updatedRecognitions.size();
+
+
+                if(found == 3) {
+                    //which one is gold.. move to it
+                    gold = getGoldRecognition(updatedRecognitions);
+                    if(gold != null){
+
+
+                        break;
+                    }
+                }
+                else if (found == 2)
+                {
+                    // find average, move
+
+                }
+
+
+
+            }
+            deactivateTFOD();
+            if(gold!=null)
+            {
+                moveToGold(gold);
+            }
+        }
+
+        return false;
+    }
+
+    private void moveToGold(Recognition gold) {
+        if(gold == null){
+            return;
+        }
+
+        double threshold = 20;
+        Range range = Range.create(640 - (threshold/2), 640 + (threshold/2));
+
+
+
+        while(opModeIsActive()) {
+            //move so gold is centered.
+            double top = gold.getTop();
+            if(range.contains(top)) {
+                //break;
+            }
+
+
+            if(top < 640 ){
+                // move ccw
+            }
+
+        }
+
+        robot.stop();
+
+        float top = gold.getTop();
+        if(top < 640) {
+
+        }
+
+
+    }
+
+
+
+
+    private Recognition getGoldRecognition(List<Recognition> recognitions) {
+        for(Recognition r: recognitions) {
+            if(r.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+
+
+    private boolean activateTFOD() {
+        if(tfod == null){
+            return false;
+        }
+        tfod.activate();
+        return true;
+    }
+    private void deactivateTFOD() {
+        if(tfod!=null) {tfod.deactivate(); }
+    }
+
+
+
 
     private GoldPosition DetectObjects (double speed) {
         if (opModeIsActive()) {
