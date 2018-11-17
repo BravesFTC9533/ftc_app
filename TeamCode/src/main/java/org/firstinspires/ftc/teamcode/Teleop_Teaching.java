@@ -45,6 +45,43 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
         if(gamepad == operatorGamePad) {
             switch (button) {
+                case FtcGamePad.GAMEPAD_X:
+                    if(pressed) {
+                        robot.togglePicker();
+                    }
+                    break;
+                case FtcGamePad.GAMEPAD_DPAD_UP:
+                    if(pressed) {
+                        robot.motorExtender.setPower(1);
+                    } else {
+                        robot.motorExtender.setPower(0);
+                    }
+                    break;
+                case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                    if(pressed) {
+                        robot.motorExtender.setPower(-1);
+                    } else {
+                        robot.motorExtender.setPower(0);
+                    }
+                    break;
+                case FtcGamePad.GAMEPAD_RBUMPER:
+                    if(pressed) {
+                        robot.motorFlipper.setPower(1);
+                    } else {
+                        robot.motorFlipper.setPower(0);
+                    }
+                    break;
+                case FtcGamePad.GAMEPAD_LBUMPER:
+                    if(pressed) {
+                        robot.motorFlipper.setPower(-1);
+                    } else {
+                        robot.motorFlipper.setPower(0);
+                    }
+                    break;
+            }
+        }
+        else if (gamepad == driverGamePad) {
+            switch (button) {
                 case FtcGamePad.GAMEPAD_A:
                     if(pressed) {
                         robot.motorLift.setPower(1);
@@ -65,7 +102,6 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                     break;
             }
         }
-
 
     }
 }

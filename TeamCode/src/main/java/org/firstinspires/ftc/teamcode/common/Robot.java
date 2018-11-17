@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
 
@@ -17,13 +18,20 @@ public class Robot {
     public DcMotor motorBackLeft = null;
     public DcMotor motorBackRight = null;
 
-    public DcMotor lights = null;
+    public DcMotor motorPicker = null;
 
-    private boolean lightsOn;
+    public DcMotor motorExtender = null;
+
+    public DcMotor motorFlipper = null;
+
+    public DcMotor lights = null;
 
     public DcMotor motorIntake = null;
 
     public DcMotor motorLift = null;
+
+    public Servo boxLeft;
+    public Servo boxRight;
 
     private final boolean fourWheelDrive;
 
@@ -41,15 +49,23 @@ public class Robot {
 
         motorFrontLeft = hardwareMap.dcMotor.get("Front_Left");
         motorFrontRight = hardwareMap.dcMotor.get("Front_Right");
+        //TODO CHANGE TO motorIntake
+        motorPicker = hardwareMap.dcMotor.get("Intake");
+        motorExtender = hardwareMap.dcMotor.get("Extender");
+        motorFlipper = hardwareMap.dcMotor.get("Flipper");
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorPicker.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFlipper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        if(config.getROBOTSPECS() == Config.RobotSpecs.REAL) {
-            lights = hardwareMap.dcMotor.get("lights");
-        }
+        boxLeft = hardwareMap.servo.get("BoxLeft");
+        boxRight = hardwareMap.servo.get("BoxRight");
 
+        lights = hardwareMap.dcMotor.get("lights");
         motorLift = hardwareMap.dcMotor.get("Lift_Motor");
+
        // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if(config.getLiftReverse()) {
             motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -91,6 +107,11 @@ public class Robot {
         return new Quad<>(flTarget, frTarget, rlTarget, rrTarget);
     }
 
+    public enum Box  {
+        LEFT,
+        RIGHT
+    }
+
     public void toggleLights() {
         if (Math.abs(lights.getPower()) > 0) {
 
@@ -101,6 +122,29 @@ public class Robot {
 
     }
 
+    public void togglePicker () {
+        if(Math.abs(motorPicker.getPower()) > 0) {
+            motorPicker.setPower(0);
+        } else {
+            motorPicker.setPower(1);
+        }
+    }
+
+    public void toggleBox (Box box) {
+        if (box == Box.LEFT) {
+            if(boxLeft.getPosition() > 0) {
+                boxLeft.setPosition(0);
+            } else if(boxLeft.getPosition() < 1) {
+                boxLeft.setPosition(1);
+            }
+        } else if (box == Box.RIGHT) {
+            if(boxRight.getPosition() > 0) {
+                boxRight.setPosition(0);
+            } else if(boxRight.getPosition() < 1) {
+                boxRight.setPosition(1);
+            }
+        }
+    }
 
     public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double inches){
         return  setNewPositionFourWheel(inches, inches, inches, inches);
