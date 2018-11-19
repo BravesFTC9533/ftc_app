@@ -95,6 +95,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
             totalMove += 10;
             if(this.locateVuforiaTarget())
             {
+                //Set found image to true
                 foundImage = true;
 
                 currentStatus = "Found Image and Is Moving";
