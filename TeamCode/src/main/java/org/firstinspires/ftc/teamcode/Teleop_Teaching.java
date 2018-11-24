@@ -19,9 +19,6 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
         setDrive(new GTADrive(robot, driverGamePad));
 
 
-
-        //DcMotor lights = hardwareMap.dcMotor.get("lights");
-
         waitForStart();
 
         while(opModeIsActive())
@@ -31,78 +28,83 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
             drive.handle();
 
-//            double value = operatorGamePad.getRightTrigger();
-//            value = Math.min(robot.config.getMaxLightBrightness(), value);
-            //lights.setPower(value);
         }
 
         robot.stop();
 
     }
 
+
+    private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed) {
+        switch (button) {
+            case FtcGamePad.GAMEPAD_X:
+                if(pressed) {
+                    //robot.togglePicker();
+                    robot.motorPicker.setPower(1);
+                } else {
+                    robot.motorPicker.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if(pressed) {
+                    robot.motorExtender.setPower(1);
+                } else {
+                    robot.motorExtender.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(pressed) {
+                    robot.motorExtender.setPower(-1);
+                } else {
+                    robot.motorExtender.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(pressed) {
+                    robot.motorFlipper.setPower(1);
+                } else {
+                    robot.motorFlipper.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_LBUMPER:
+                if(pressed) {
+                    robot.motorFlipper.setPower(-1);
+                } else {
+                    robot.motorFlipper.setPower(0);
+                }
+                break;
+        }
+    }
+
+    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
+        switch (button) {
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    robot.motorLift.setPower(1);
+                }
+                else {
+                    robot.motorLift.setPower(0);
+                }
+
+                break;
+            case FtcGamePad.GAMEPAD_Y:
+                if(pressed) {
+                    robot.motorLift.setPower(-1);
+                } else {
+                    robot.motorLift.setPower(0);
+                }
+
+                break;
+        }
+    }
     @Override
     public void gamepadButtonEvent(FtcGamePad gamepad, int button, boolean pressed) {
 
         if(gamepad == operatorGamePad) {
-            switch (button) {
-                case FtcGamePad.GAMEPAD_X:
-                    if(pressed) {
-                        robot.motorPicker.setPower(1);
-                    } else {
-                        robot.motorPicker.setPower(0);
-                    }
-                    break;
-                case FtcGamePad.GAMEPAD_DPAD_UP:
-                    if(pressed) {
-                        robot.motorExtender.setPower(1);
-                    } else {
-                        robot.motorExtender.setPower(0);
-                    }
-                    break;
-                case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                    if(pressed) {
-                        robot.motorExtender.setPower(-1);
-                    } else {
-                        robot.motorExtender.setPower(0);
-                    }
-                    break;
-                case FtcGamePad.GAMEPAD_RBUMPER:
-                    if(pressed) {
-                        robot.motorFlipper.setPower(1);
-                    } else {
-                        robot.motorFlipper.setPower(0);
-                    }
-                    break;
-                case FtcGamePad.GAMEPAD_LBUMPER:
-                    if(pressed) {
-                        robot.motorFlipper.setPower(-1);
-                    } else {
-                        robot.motorFlipper.setPower(0);
-                    }
-                    break;
-            }
+            handleOperatorGamePad(gamepad, button, pressed);
         }
         else if (gamepad == driverGamePad) {
-            switch (button) {
-                case FtcGamePad.GAMEPAD_A:
-                    if(pressed) {
-                        robot.motorLift.setPower(1);
-                    }
-                    else {
-                        robot.motorLift.setPower(0);
-                    }
-
-                    break;
-                case FtcGamePad.GAMEPAD_Y:
-                    if(pressed) {
-                        robot.motorLift.setPower(-1);
-                    } else {
-                        robot.motorLift.setPower(0);
-                    }
-
-                    // used for cryptoblock lift
-                    break;
-            }
+            handleDriverGamepad(gamepad, button, pressed);
         }
 
     }
