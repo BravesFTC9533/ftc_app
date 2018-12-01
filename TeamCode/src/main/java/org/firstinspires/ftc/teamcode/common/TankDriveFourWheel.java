@@ -3,13 +3,21 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class TankDriveFourWheel implements IDrive {
-    private final Robot robot;
+    private final DcMotor fl;
+    private final DcMotor fr;
+    private final DcMotor bl;
+    private final DcMotor br;
     private boolean isReverse;
     private final FtcGamePad driver;
 
-    public TankDriveFourWheel(Robot robot, FtcGamePad driver)
+    public TankDriveFourWheel(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br, FtcGamePad driver)
     {
-        this.robot = robot;
+        // this.robot = robot;
+        // this.driver = driver;
+        this.fl = fl;
+        this.fr = fr;
+        this.bl = bl;
+        this.br = br;
         this.driver = driver;
     }
 
@@ -29,10 +37,10 @@ public class TankDriveFourWheel implements IDrive {
     }
 
     public void drive(double left, double right) {
-        this.robot.motorFrontLeft.setPower(this.isReverse ? -right : left);
-        this.robot.motorBackLeft.setPower(this.isReverse ? -right: left);
-        this.robot.motorFrontRight.setPower(this.isReverse ? -left : right);
-        this.robot.motorBackRight.setPower(this.isReverse ? -left: right);
+        this.fl.setPower(this.isReverse ? -right : left);
+        this.bl.setPower(this.isReverse ? -right: left);
+        this.fr.setPower(this.isReverse ? -left : right);
+        this.br.setPower(this.isReverse ? -left: right);
     }
 
 
@@ -43,7 +51,14 @@ public class TankDriveFourWheel implements IDrive {
 
     @Override
     public void stop() {
-        this.robot.stop();
+        stopMotor(fl);
+        stopMotor(fr);
+        stopMotor(bl);
+        stopMotor(br);
+    }
+
+    private void stopMotor(DcMotor m) {
+        m.setPower(0);
     }
 
     @Override
