@@ -93,7 +93,6 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 } else {
                     robot.motorLift.setPower(0);
                 }
-
                 break;
         }
     }

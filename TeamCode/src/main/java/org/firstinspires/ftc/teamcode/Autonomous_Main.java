@@ -166,19 +166,14 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
     void Silver(double speed) {
         //TODO Start off with Tensor Flow and check to see where gold object is
         telemetry.log().add("Turning on lights");
-        pause();
         robot.toggleLights();
-        pause();
         //telemetry.log().add("Lights on (%0.2f)", robot.lights.getPower());
         GoldPosition gp = DetectObjects(speed);
-        pause();
         telemetry.log().add("Turning off lights");
         robot.toggleLights();
-        pause();
 
         //TODO Move towards the object and push it off the red square
         goldPosition(gp, speed);
-
 
         while(opModeIsActive()){
             idle();
