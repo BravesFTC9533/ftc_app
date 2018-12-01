@@ -39,6 +39,7 @@ class Option
     }
 
 
+
     public Option(String name, double max, double min, double inc)
     {
         this.name = name;
@@ -51,6 +52,22 @@ class Option
         }
 
         choiceIndex = 0;           //fix this rock hard code
+    }
+
+
+    public Option(String name, int max, int min, int inc, int start){
+        this.name = name;
+
+        int size = (int) (((max+inc)-min)/inc);
+        choices = new String[size];
+        for (int i = 0; i < size; i++)
+        {
+            double val = min + (inc*i);
+            choices[i] = String.valueOf(val);
+            if(Math.abs(val - start) < 0.001) {
+                choiceIndex = i;
+            }
+        }
     }
     public Option(String name, double max, double min, double inc, double start)
     {
@@ -157,9 +174,9 @@ public class SimpleMenu {
     {
         this.options.add(new Option(option, max, min, inc, start));
     }
-    public void addOption(String option, int max, int min, int inc, double start)
+    public void addOption(String option, int max, int min, int inc, int start)
     {
-        this.options.add(new Option(option, max, min, inc, start));
+        this.options.add(new Option(option, (int)max, (int)min, inc, start));
     }
     public String getCurrentChoiceOf(String option) {
         for (Option o : this.options) {

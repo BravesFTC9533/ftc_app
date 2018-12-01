@@ -15,56 +15,51 @@ public class Robot {
 
     public DcMotor motorFrontLeft = null;
     public DcMotor motorFrontRight = null;
+
     public DcMotor motorBackLeft = null;
     public DcMotor motorBackRight = null;
 
-    public DcMotor motorPicker = null;
 
-    public DcMotor motorExtender = null;
-
-    public DcMotor motorFlipper = null;
-
+    public DcMotor motorSwing = null;
     public DcMotor lights = null;
-
     public DcMotor motorIntake = null;
-
     public DcMotor motorLift = null;
 
     public Servo boxLeft;
     public Servo boxRight;
+    public Servo boot;
 
     private final boolean fourWheelDrive;
 
     public Config config;
 
 
-//    public Servo servoIntakeLeft = null;
-//    public Servo servoIntakeRight = null;
-//
-//    public DcMotor motorArmLift = null;
-//    public DcMotor motorArmSlide = null;
-
     public Robot(HardwareMap hardwareMap, boolean fourWheelDrive) {
         this.config = new Config(hardwareMap.appContext);
 
         motorFrontLeft = hardwareMap.dcMotor.get("Front_Left");
         motorFrontRight = hardwareMap.dcMotor.get("Front_Right");
-        //TODO CHANGE TO motorIntake
-        motorPicker = hardwareMap.dcMotor.get("Intake");
-        motorExtender = hardwareMap.dcMotor.get("Extender");
-        motorFlipper = hardwareMap.dcMotor.get("Flipper");
-        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorPicker.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFlipper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorLift = hardwareMap.dcMotor.get("Lift_Motor");
+        motorIntake = hardwareMap.dcMotor.get("Intake");
+        motorSwing = hardwareMap.dcMotor.get("Flipper");
 
         boxLeft = hardwareMap.servo.get("BoxLeft");
         boxRight = hardwareMap.servo.get("BoxRight");
+        boot = hardwareMap.servo.get("Boot");
+
+
+
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorSwing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
         lights = hardwareMap.dcMotor.get("lights");
-        motorLift = hardwareMap.dcMotor.get("Lift_Motor");
+
 
        // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if(config.getLiftReverse()) {
