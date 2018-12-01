@@ -25,6 +25,12 @@ public class Config {
     private final String INITIAL_TURN_CLOCKWISE = "initial_turn_clockwise";
     private final String INITIAL_TURN_COUNTERCLOCKWISE = "initial_turn_counterclockwise";
 
+    private final String INTAKE_POWER = "intakePower";
+    private final String LIFT_SILVER = "liftSilverTicks";
+    private final String LIFT_GOLD = "liftGoldTicks";
+
+    private final String SWINGARM_POWER = "swingArmPower";
+
     private Colors _color;
     private Positions _position;
     private double _delayStart;
@@ -38,6 +44,12 @@ public class Config {
 
     private double _initialTurnDegreesCounterClockwise;
     private double _initialTurnDegreesClockwise;
+
+    private double _intakePower;
+
+    private int _liftSilverTicks;
+    private int _liftGoldTicks;
+    private double _swingArmPower;
 
 
     public Oreantation getPHONEOREANTATION () { return _phoneOreantation; }
@@ -86,6 +98,20 @@ public class Config {
         _liftReverse = reverse;
     }
 
+    public double getIntakePower() { return  _intakePower;}
+    public void setIntakePower(double value) {
+        _intakePower = value;
+    }
+
+
+    public int getLiftSilverTicks() { return _liftSilverTicks; }
+    public void setLiftSilverTicks(int ticks) { _liftSilverTicks = ticks; }
+
+    public int getLiftGoldTicks() { return _liftGoldTicks; }
+    public void setLifTGoldTicks(int ticks) { _liftGoldTicks = ticks; }
+
+    public double getSwingArmPower() { return _swingArmPower;  }
+    public void setSwingArmPower(double _swingArmPower) { this._swingArmPower = _swingArmPower;   }
 
     public void save() {
         SharedPreferences.Editor editor = sp.edit();
@@ -101,6 +127,16 @@ public class Config {
         editor.putString(ROBOTSPECS, _robotSpecs.name());
         editor.putFloat(INITIAL_TURN_CLOCKWISE, (float)_initialTurnDegreesClockwise);
         editor.putFloat(INITIAL_TURN_COUNTERCLOCKWISE, (float)_initialTurnDegreesCounterClockwise);
+        editor.putFloat(INTAKE_POWER, (float)_intakePower);
+
+
+
+        editor.putInt(LIFT_SILVER, _liftSilverTicks);
+        editor.putInt(LIFT_GOLD, _liftGoldTicks);
+
+        editor.putFloat(SWINGARM_POWER, (float)_swingArmPower);
+
+
         editor.commit();
 
     }
@@ -120,6 +156,8 @@ public class Config {
     public void set_initialTurnDegreesClockwise(double _initialTurnDegreesClockwise) {
         this._initialTurnDegreesClockwise = _initialTurnDegreesClockwise;
     }
+
+
 
     public enum Colors {
         RED, BLUE;
@@ -179,7 +217,7 @@ public class Config {
         _position = Positions.toPosition(sp.getString(POSITION, "GOLD"));
         _delayStart = sp.getFloat(DELAY_START, 0.2f);
         _speed = sp.getFloat(SPEED, 0.85f);
-        _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 100);
+        _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 1000);
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
         _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
@@ -189,8 +227,12 @@ public class Config {
         _robotSpecs = RobotSpecs.toSpecs(sp.getString(ROBOTSPECS, "TEST"));
         _initialTurnDegreesClockwise = sp.getFloat(INITIAL_TURN_CLOCKWISE, 70);
         _initialTurnDegreesCounterClockwise = sp.getFloat(INITIAL_TURN_COUNTERCLOCKWISE, 70);
+        _intakePower = sp.getFloat(INTAKE_POWER, 1.0f);
 
+        _liftSilverTicks = sp.getInt(LIFT_SILVER, 100);
+        _liftGoldTicks = sp.getInt(LIFT_GOLD, 120);
 
+        _swingArmPower = sp.getFloat(SWINGARM_POWER, 0.5f);
     }
 
 }
