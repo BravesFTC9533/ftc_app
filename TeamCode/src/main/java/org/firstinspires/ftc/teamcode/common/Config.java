@@ -30,17 +30,19 @@ public class Config {
     private final String LIFT_GOLD = "liftGoldTicks";
 
     private final String SWINGARM_POWER = "swingArmPower";
+    private final String MAX_SWING_TICKS = "swingArmMaxTicks";
 
     private Colors _color;
     private Positions _position;
     private double _delayStart;
     private double _speed;
     private int _maxLiftTicks;
+    private int _maxSwingTicks;
     private Oreantation _phoneOreantation;
     private RobotSpecs _robotSpecs;
     private double _tensorFlowYThreshold;
     private double _maxLightBrightness;
-    private boolean _liftReverse;
+    private Directions _liftReverse;
 
     private double _initialTurnDegreesCounterClockwise;
     private double _initialTurnDegreesClockwise;
@@ -83,6 +85,11 @@ public class Config {
         _speed = speed;
     }
 
+    public int getMaxSwingTicks() { return _maxSwingTicks; }
+    public void setMaxSwingTicks(int ticks) {
+        _maxSwingTicks = ticks;
+    }
+
     public int getMaxLiftTicks() { return _maxLiftTicks; }
     public void setMaxLiftTicks(int ticks) {
         _maxLiftTicks = ticks;
@@ -93,9 +100,9 @@ public class Config {
         _maxLightBrightness = brightness;
     }
 
-    public boolean getLiftReverse() { return _liftReverse; }
+    public boolean getLiftReverse() { return _liftReverse == Directions.REVERSE; }
     public void setLiftReverse(boolean reverse) {
-        _liftReverse = reverse;
+        _liftReverse = reverse ? Directions.REVERSE : Directions.NORMAL;
     }
 
     public double getIntakePower() { return  _intakePower;}
@@ -121,13 +128,15 @@ public class Config {
         editor.putFloat(SPEED, (float)_speed);
         editor.putInt(MAX_LIFT_TICKS, _maxLiftTicks);
         editor.putFloat(MAX_LIGHT_BRIGHTNESS, (float)_maxLightBrightness);
-        editor.putBoolean(LIFT_REVERSE, _liftReverse);
+        editor.putBoolean(LIFT_REVERSE, _liftReverse == Directions.REVERSE ? true : false);
         editor.putFloat(TENSORFLOW_Y_THRESHOLD, (float) _tensorFlowYThreshold);
         editor.putString(PHONEOREANTATION, _phoneOreantation.name());
         editor.putString(ROBOTSPECS, _robotSpecs.name());
         editor.putFloat(INITIAL_TURN_CLOCKWISE, (float)_initialTurnDegreesClockwise);
         editor.putFloat(INITIAL_TURN_COUNTERCLOCKWISE, (float)_initialTurnDegreesCounterClockwise);
         editor.putFloat(INTAKE_POWER, (float)_intakePower);
+
+        editor.putInt(MAX_SWING_TICKS, _maxSwingTicks);
 
 
 
@@ -157,6 +166,17 @@ public class Config {
         this._initialTurnDegreesClockwise = _initialTurnDegreesClockwise;
     }
 
+    public enum Directions {
+        NORMAL, REVERSE;
+
+        public static Directions toDirection(String direction) {
+            try {
+                return valueOf(direction);
+            } catch(Exception ex) {
+                return  NORMAL;
+            }
+        }
+    }
 
 
     public enum Colors {
@@ -218,8 +238,14 @@ public class Config {
         _delayStart = sp.getFloat(DELAY_START, 0.2f);
         _speed = sp.getFloat(SPEED, 0.85f);
         _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 1000);
+        _maxSwingTicks = sp.getInt(MAX_SWING_TICKS, 128);
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
-        _liftReverse = sp.getBoolean(LIFT_REVERSE, false);
+
+        boolean shouldLiftBeReverse = sp.getBoolean(LIFT_REVERSE, false);
+
+        _liftReverse = shouldLiftBeReverse ? Directions.REVERSE : Directions.NORMAL;
+
+        //_liftReverse =
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
         //TODO change to right for robot for competition.
         _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "LEFT"));

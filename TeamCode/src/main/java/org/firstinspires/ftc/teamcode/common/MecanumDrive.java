@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import javax.crypto.ExemptionMechanism;
+
 
 /**
  * Created by 9533 on 2/3/2018.
@@ -11,15 +13,28 @@ import com.qualcomm.robotcore.util.Range;
 public class MecanumDrive implements IDrive {
 
     private final FtcGamePad driverGamepad;
-    private final Robot robot;
+    //private final Robot robot;
 
     private static final double MIN_SPEED = 0.2;
+    private final DcMotor fl;
+    private final DcMotor fr;
+    private final DcMotor bl;
+    private final DcMotor br;
 
     boolean reverse = false;
+//
+//    public MecanumDrive(Robot robot, FtcGamePad driveGamepad){
+//        this.driverGamepad = driveGamepad;
+//        this.robot = robot;
+//    }
 
-    public MecanumDrive(Robot robot, FtcGamePad driveGamepad){
-        this.driverGamepad = driveGamepad;
-        this.robot = robot;
+    public MecanumDrive(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br, FtcGamePad driverGamepad) {
+
+        this.fl = fl;
+        this.fr = fr;
+        this.bl = bl;
+        this.br = br;
+        this.driverGamepad = driverGamepad;
     }
 
     public boolean getIsReverse(){
@@ -85,6 +100,10 @@ public class MecanumDrive implements IDrive {
             backRight = scalePower(backRight, max);
         }
 
+        fl.setPower(frontLeft);
+        fr.setPower(frontRight);
+        bl.setPower(backLeft);
+        br.setPower(backRight);
 
         //robot.Drive(frontLeft, frontRight, backLeft, backRight);
 
@@ -111,6 +130,10 @@ public class MecanumDrive implements IDrive {
     @Override
     public void setMode(DcMotor.RunMode runMode) {
 
+        fl.setMode(runMode);
+        fr.setMode(runMode);
+        bl.setMode(runMode);
+        br.setMode(runMode);
     }
 
     @Override

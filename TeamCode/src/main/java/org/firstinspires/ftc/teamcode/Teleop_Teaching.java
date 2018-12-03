@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.FtcGamePad;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
@@ -20,13 +21,18 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
         driverGamePad = new FtcGamePad("driver", gamepad1, this);
         operatorGamePad = new FtcGamePad("operator", gamepad2, this);
 
-        Initialize(hardwareMap, false);
+        Initialize(hardwareMap, true);
         setDrive(new GTADrive(robot, driverGamePad));
+
+
+
+        robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         waitForStart();
 
-        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
 
 
@@ -39,13 +45,26 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
             drive.handle();
 
 
+            telemetry.addData("Drive: ", "%s", new Func<String>() {
+                @Override public String value() {
+                    if(drive.getIsReverse()) {
+                        return  "Reverse";
+                    } else {
+                        return  "Normal";
+                    }
+                }
+            });
             telemetry.addLine("Controls:");
-            telemetry.addLine("A)  Lift motor +");
-            telemetry.addLine("Y)  Lift motor -");
+            telemetry.addLine("A)  Lift motor up (auto)");
+            telemetry.addLine("Y)  Lift motor down (auto)");
             telemetry.addLine("X)  Intake +");
-            telemetry.addLine("B)  ");
-            telemetry.addLine("RB) Swingarm +");
-            telemetry.addLine("LB) Swingarm -");
+            telemetry.addLine("B)  Stop all motors");
+            telemetry.addLine("RB) Swingarm up (auto)");
+            telemetry.addLine("LB) Swingarm down (auto)");
+            telemetry.addLine("DU) Swingarm +");
+            telemetry.addLine("DD) Swingarm -");
+            telemetry.addLine("DL) Lift motor -");
+            telemetry.addLine("DR) Lift motor +");
             telemetry.addLine();
 
 
@@ -68,20 +87,35 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
     private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
         switch (button) {
-            case FtcGamePad.GAMEPAD_A:
+            case FtcGamePad.GAMEPAD_Y:
                 if(pressed) {
+
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
                     robot.motorLift.setPower(1);
+                    //robot.motorLift.setPower(-1);
                 }
                 else {
-                    robot.motorLift.setPower(0);
+                    //robot.motorLift.setPower(0);
                 }
 
                 break;
-            case FtcGamePad.GAMEPAD_Y:
+            case FtcGamePad.GAMEPAD_B:
                 if(pressed) {
-                    robot.motorLift.setPower(-1);
-                } else {
+                    robot.motorSwing.setPower(0);
+                    robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
                     robot.motorLift.setPower(0);
+                    robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(50);
+                    robot.motorLift.setPower(1);
+                } else {
+                    //robot.motorLift.setPower(0);
                 }
 
                 break;
@@ -96,30 +130,93 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 break;
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(pressed) {
-
-                } else {
-
-                }
-                break;
-            case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                if(pressed) {
-
-                } else {
-
-                }
-                break;
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                if(pressed) {
+                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.motorSwing.setPower(config.getSwingArmPower());
                 } else {
                     robot.motorSwing.setPower(0);
                 }
                 break;
-            case FtcGamePad.GAMEPAD_LBUMPER:
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
+                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.motorSwing.setPower(-config.getSwingArmPower());
                 } else {
                     robot.motorSwing.setPower(0);
+                }
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_LEFT:
+                if(pressed) {
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.motorLift.setPower(-1);
+                } else {
+                    robot.motorLift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_RIGHT:
+                if(pressed) {
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.motorLift.setPower(1);
+                } else {
+                    robot.motorLift.setPower(0);
+                }
+                break;
+
+
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(pressed) {
+
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(3500);
+                    robot.motorLift.setPower(1);
+
+                    while(opModeIsActive() && robot.motorLift.isBusy()){
+                        idle();
+                    }
+                    robot.motorLift.setPower(0);
+
+                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorSwing.setTargetPosition(config.getMaxSwingTicks());
+                    robot.motorSwing.setPower(config.getSwingArmPower());
+                    while(opModeIsActive() && robot.motorSwing.isBusy()){
+                        idle();
+                    }
+                    robot.motorSwing.setPower(0);
+                    //robot.motorSwing.setPower(config.getSwingArmPower());
+                } else {
+                    //robot.motorSwing.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_LBUMPER:
+                if(pressed) {
+
+
+                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorSwing.setTargetPosition(0);
+                    robot.motorSwing.setPower(config.getSwingArmPower());
+                    while(opModeIsActive() && robot.motorSwing.isBusy()){
+                        idle();
+                    }
+                    robot.motorSwing.setPower(0);
+
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(0);
+                    robot.motorLift.setPower(1);
+
+                    while(opModeIsActive() && robot.motorLift.isBusy()){
+                        idle();
+                    }
+                    robot.motorLift.setPower(0);
+
+                } else {
+                    //robot.motorSwing.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_BACK:
+                if(pressed) {
+                   drive.setIsReverse(!drive.getIsReverse());
+                } else {
+
                 }
                 break;
         }

@@ -37,16 +37,16 @@ public class Robot {
     public Robot(HardwareMap hardwareMap, boolean fourWheelDrive) {
         this.config = new Config(hardwareMap.appContext);
 
-        motorFrontLeft = hardwareMap.dcMotor.get("Front_Left");
-        motorFrontRight = hardwareMap.dcMotor.get("Front_Right");
+        motorFrontLeft = hardwareMap.dcMotor.get("fl");
+        motorFrontRight = hardwareMap.dcMotor.get("fr");
 
-        motorLift = hardwareMap.dcMotor.get("Lift_Motor");
-        motorIntake = hardwareMap.dcMotor.get("Intake");
-        motorSwing = hardwareMap.dcMotor.get("Flipper");
+        motorLift = hardwareMap.dcMotor.get("lift");
+        motorIntake = hardwareMap.dcMotor.get("intake");
+        motorSwing = hardwareMap.dcMotor.get("swingarm");
 
-        boxLeft = hardwareMap.servo.get("BoxLeft");
-        boxRight = hardwareMap.servo.get("BoxRight");
-        boot = hardwareMap.servo.get("Boot");
+        boxLeft = hardwareMap.servo.get("boxleft");
+        boxRight = hardwareMap.servo.get("boxright");
+        boot = hardwareMap.servo.get("boot");
 
 
 
@@ -61,6 +61,8 @@ public class Robot {
         lights = hardwareMap.dcMotor.get("lights");
 
 
+        motorIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+
        // motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if(config.getLiftReverse()) {
             motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -72,8 +74,8 @@ public class Robot {
 
         if(fourWheelDrive) {
 
-            motorBackLeft = hardwareMap.dcMotor.get("Back_Left");
-            motorBackRight = hardwareMap.dcMotor.get("Back_Right");
+            motorBackLeft = hardwareMap.dcMotor.get("bl");
+            motorBackRight = hardwareMap.dcMotor.get("br");
             motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
             motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

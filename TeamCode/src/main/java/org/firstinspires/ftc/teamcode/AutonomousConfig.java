@@ -24,9 +24,12 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Position", Config.Positions.class, config.getPosition());
 
 
+
         menu.addOption("Max Lift Ticks", 10000, 0, 1, config.getMaxLiftTicks());
         menu.addOption("Lift Ticks - Silver", 10000, 0, 1, config.getLiftSilverTicks());
         menu.addOption("Lift Ticks - Gold", 10000, 0, 1, config.getLiftGoldTicks());
+
+        menu.addOption("Max Swing Ticks", 10000, 0, 1, config.getMaxSwingTicks());
 
         menu.addOption("Speed", 1, 0, 0.05, config.getSpeed());
         menu.addOption("Intake Power", 1, 0, 0.05, config.getIntakePower());
@@ -43,6 +46,7 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Initial Turn CW", 90, 0, 1, config.get_initialTurnDegreesClockwise());
         menu.addOption("Initial Turn CCW", 90, 0, 1, config.get_initialTurnDegreesCounterClockwise());
 
+        menu.addOption("Lift Reverse", Config.Directions.class, config.getLiftReverse() ? Config.Directions.REVERSE : Config.Directions.NORMAL);
 //        menu.addOption("kP", 1000, 0, 0.01, config.kp);
 //        menu.addOption("kI", 1000, 0, 0.01, config.ki);
 //        menu.addOption("kD", 1000, 0, 0.01, config.kd);
@@ -58,10 +62,23 @@ public class AutonomousConfig extends LinearOpMode {
 
 
             config.setMaxLiftTicks((int)Double.parseDouble(menu.getCurrentChoiceOf("Max Lift Ticks")));
+            config.setMaxSwingTicks((int)Double.parseDouble(menu.getCurrentChoiceOf("Max Swing Ticks")));
             config.setLiftSilverTicks((int)Double.parseDouble(menu.getCurrentChoiceOf("Lift Ticks - Silver")));
             config.setLifTGoldTicks((int)Double.parseDouble(menu.getCurrentChoiceOf("Lift Ticks - Gold")));
 
+            switch(menu.getCurrentChoiceOf("Lift Reverse")) {
+                case "REVERSE":
+                    config.setLiftReverse(true);
+                    break;
+                case "NORMAL":
+                    config.setLiftReverse(false);
+                    break;
+
+            }
+
             config.setDelayStart(Double.parseDouble(menu.getCurrentChoiceOf("Delay Start")));
+
+
 
            /// config.setTensorflowYThreshold(Double.parseDouble(menu.getCurrentChoiceOf("TF Y Thresh")));
             config.setSpeed(Double.parseDouble(menu.getCurrentChoiceOf("Speed")));
