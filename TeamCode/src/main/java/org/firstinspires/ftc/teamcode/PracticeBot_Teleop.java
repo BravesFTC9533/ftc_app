@@ -34,7 +34,6 @@ public class PracticeBot_Teleop extends LinearOpMode implements FtcGamePad.Butto
         drive = new MecanumDrive(fl, fr, bl, fr, driverGamepad);
 
 
-
         waitForStart();
 
         while(opModeIsActive()){

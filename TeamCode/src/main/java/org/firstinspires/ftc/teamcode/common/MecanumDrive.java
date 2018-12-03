@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Teaching_BaseLinearOpMode;
+
 import javax.crypto.ExemptionMechanism;
 
 
@@ -54,7 +56,6 @@ public class MecanumDrive implements IDrive {
         h = -driverGamepad.getLeftStickX();
         v = driverGamepad.getLeftStickY();
         r = driverGamepad.getRightStickX();
-
 
         if(Math.abs(h) < MIN_SPEED) {
             h = 0;
@@ -129,7 +130,6 @@ public class MecanumDrive implements IDrive {
 
     @Override
     public void setMode(DcMotor.RunMode runMode) {
-
         fl.setMode(runMode);
         fr.setMode(runMode);
         bl.setMode(runMode);
