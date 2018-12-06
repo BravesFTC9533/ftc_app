@@ -115,7 +115,7 @@ public class MecanumDrive_OpMode extends LinearOpMode {
             //rightDrive.setPower(rightPower);
             frontLeft.setPower(leftPower);
             backLeft.setPower(leftPower);
-            frontRight.setPower(rightPower);
+            frontRight.setPower(-rightPower);
             frontLeft.setPower(rightPower);
 
             // Show the elapsed game time and wheel power.
