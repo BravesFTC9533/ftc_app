@@ -117,6 +117,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     private GoldPosition DetectObjectsNonStop() {
         loop = false;
+        robot.toggleLights();
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
@@ -277,6 +278,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     }
 
     void PushOffGoldObject(double speed, GoldPosition gp) {
+        robot.toggleLights();
         if(gp == gpCenter) {
             telemetry.log().add("Gold Position Is In The Center Position");
             driveStraight(speed, 8, 1);
