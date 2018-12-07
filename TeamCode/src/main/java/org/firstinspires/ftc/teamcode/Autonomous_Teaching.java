@@ -291,54 +291,37 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         if(gp == gpCenter) {
             telemetry.log().add("Gold Position Is In The Center Position");
             driveStraight(speed, 20, 1);
+            driveStraight(speed, -20, 1);
         } else if(gp == gpLeft) {
             telemetry.log().add("Gold Position Is In The Left Position");
             turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
             driveStraight(speed, 20, 1);
+            driveStraight(speed, -20, 1);
+            turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
         } else if(gp == gpRight) {
             telemetry.log().add("Gold Position Is In The Right Position");
             turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
             driveStraight(speed, 20, 1);
+            driveStraight(speed, -20, 1);
+            turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
         } else if(gp == gpUnknown) {
             telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
             driveStraight(speed, 20, 1);
+            driveStraight(speed, -20, 1);
+        }
+
+        if(config.getPosition() == Config.Positions.GOLD) {
+            Gold(speed);
+        } else if(config.getPosition() == Config.Positions.SILVER) {
+            Silver(speed);
         }
     }
 
     void Gold(double speed) {
+        driveStraight(speed, 35, 1);
+    }
 
-//        //drive out from lander
-//        driveStraight(speed, 14, 5);
-//        pause();
-//
-//        //turn left
-//        turn90(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        //drive forward 24 inches
-//        driveStraight(speed, 24, 5);
-//        pause();
-//
-//        //turn to face wall
-//        turn45(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
-//        //drive to wall, stopping at least 10 inches short
-//        driveStraight(speed, 15, 5);
-//        pause();
-//
-//        turn90(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(1, 48, 20);
-//        pause();
-//
-//        driveStraight(1, -76, 20);
-//        pause();
-
-//        turn90(TurnDirection.CLOCKWISE, speed);
-//        pause();
-//
+    void Silver(double speed) {
 
     }
 
