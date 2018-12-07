@@ -19,7 +19,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-@Autonomous(name="Main: Autonomous", group="Competition Code")
+@Autonomous(name="Main: Autonomous", group="Competition Code" +
+        "" +
+        "")
 //@Disabled
 public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
@@ -79,7 +81,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         double speed = 0.65;
 
-        telemetry.log().add("Completed Initialization. THIS IS ONLY FOR TEACHING!");
+        telemetry.log().add("Completed Initialization. Good Luck!!!");
         telemetry.update();
 
         waitForStart();
