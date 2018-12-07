@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.util.Range;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -21,6 +22,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @Autonomous(name="Main: Autonomous", group="Main")
+@Disabled
 
 public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 

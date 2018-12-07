@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,6 +15,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 
 @Autonomous(name="Test: Autonomous", group="Test")
+@Disabled
 
 public class Autonomous_Test extends Teaching_BaseLinearOpMode {
     enum TurnDirection {

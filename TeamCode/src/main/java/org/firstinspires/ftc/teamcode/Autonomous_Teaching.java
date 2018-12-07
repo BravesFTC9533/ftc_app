@@ -19,7 +19,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-@Autonomous(name="Teaching: Autonomous", group="Tutorials")
+@Autonomous(name="Main: Autonomous", group="Competition Code")
 //@Disabled
 public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
