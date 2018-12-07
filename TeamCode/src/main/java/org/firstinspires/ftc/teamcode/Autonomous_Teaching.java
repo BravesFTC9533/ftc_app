@@ -57,30 +57,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-//        Initialize(hardwareMap, false);
-//        setDrive(new GTADrive(robot, driverGamePad));
-
-//        // We can control the number of lines shown in the log
-//        telemetry.log().setCapacity(10);
-//
-//        telemetry.addData("startup", "initializing vuforia");
-//        telemetry.update();
-//        initializeVuforia();
-//
-//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-//            initTfod();
-//        } else {
-//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-//        }
-//
-//        telemetry.addData("startup", "vuforia initialized.. waiting for start");
-//        telemetry.addData("team", robot.config.getColor().toString());
-//        telemetry.addData("position", robot.config.getPosition().toString());
-//        telemetry.addData("speed", "%.1f", robot.config.getSpeed());
-//        telemetry.update();
-//
-//        double speed = robot.config.getSpeed();
-
 
         // We can control the number of lines shown in the log
         telemetry.log().setCapacity(10);
@@ -112,21 +88,13 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         waitForStart();
 
-
         waitForDelayStart();
 
-
-
-
+        dropToGround();
 
         state = DetectObjectsNonStop();
+
         PushOffGoldObject(speed, state);
-
-        //drop down
-
-        //driveStraight(.5, 24, 10);
-
-        //detectParticles();
 
         //Silver(speed);
 
@@ -137,6 +105,8 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     private GoldPosition DetectObjectsNonStop() {
         loop = false;
         robot.toggleLights();
+
+        ElapsedTime timer = new ElapsedTime();
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
@@ -145,7 +115,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
             int missingDetectionCounter = 0;
 
-            while (opModeIsActive()) {
+            while (opModeIsActive() && timer.seconds() < 2) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -234,7 +204,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         robot.motorLift.setPower(1);
     }
 
-
     void waitForDelayStart(){
         double delay = config.getDelayStart();
         ElapsedTime time = new ElapsedTime();
@@ -245,6 +214,18 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             }
         }
     }
+
+    void dropToGround() {
+        robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
+        robot.motorLift.setPower(1);
+        while(opModeIsActive() && robot.motorLift.isBusy()) {
+            idle();
+        }
+    }
+
+
+
 
 
 
