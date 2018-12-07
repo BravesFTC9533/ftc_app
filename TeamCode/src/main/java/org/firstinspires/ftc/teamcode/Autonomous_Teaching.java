@@ -51,7 +51,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     private static final long pauseTimeBetweenSteps = 1000;
 
-    Random rand = new Random();
     int max = 3;
     int min = 0;
 
@@ -291,7 +290,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         robot.toggleLights();
         if(gp == gpCenter) {
             telemetry.log().add("Gold Position Is In The Center Position");
-            driveStraight(speed, 8, 1);
+            driveStraight(speed, 20, 1);
         } else if(gp == gpLeft) {
             telemetry.log().add("Gold Position Is In The Left Position");
             turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
@@ -301,8 +300,8 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
             driveStraight(speed, 20, 1);
         } else if(gp == gpUnknown) {
-            telemetry.log().add("Could Not Find Gold Block Picking A Place To Go! :(");
-            int value = rand.nextInt((max - min) + 1) + min;
+            telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
+            driveStraight(speed, 20, 1);
         }
     }
 
