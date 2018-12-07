@@ -58,6 +58,8 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+
+
         // We can control the number of lines shown in the log
         telemetry.log().setCapacity(10);
 
@@ -68,7 +70,9 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
         config = new Config(hardwareMap.appContext);
-        //ComposeTelemetryPreStart();
+
+        Config.Colors color = config.getColor();
+        Config.Positions position = config.getPosition();
 
 
         telemetry.log().add("Setting up vuforia");
@@ -90,13 +94,23 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         waitForDelayStart();
 
+        pause();
+
         dropToGround();
 
+        pause();
         state = DetectObjectsNonStop();
-
         PushOffGoldObject(speed, state);
 
-        //Silver(speed);
+
+        pause();
+        if(position == Config.Positions.GOLD) {
+            Gold(speed);
+        } else {
+            Silver(speed);
+        }
+
+        pause();
 
 
     }
@@ -225,7 +239,13 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     }
 
 
+    void Silver(double speed) {
 
+    }
+    void Gold(double speed) {
+
+
+    }
 
 
 
@@ -297,39 +317,21 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         if(gp == gpCenter) {
             telemetry.log().add("Gold Position Is In The Center Position");
             driveStraight(speed, 20, 1);
-            driveStraight(speed, -20, 1);
         } else if(gp == gpLeft) {
             telemetry.log().add("Gold Position Is In The Left Position");
             turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
             driveStraight(speed, 20, 1);
-            driveStraight(speed, -20, 1);
-            turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
         } else if(gp == gpRight) {
             telemetry.log().add("Gold Position Is In The Right Position");
             turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
             driveStraight(speed, 20, 1);
-            driveStraight(speed, -20, 1);
-            turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
         } else if(gp == gpUnknown) {
             telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
             driveStraight(speed, 20, 1);
-            driveStraight(speed, -20, 1);
-        }
-
-        if(config.getPosition() == Config.Positions.GOLD) {
-            Gold(speed);
-        } else if(config.getPosition() == Config.Positions.SILVER) {
-            Silver(speed);
         }
     }
 
-    void Gold(double speed) {
-        driveStraight(speed, 35, 1);
-    }
 
-    void Silver(double speed) {
-
-    }
 
     void driveStraight(double speed, double inches, double timeoutSeconds) {
         encoderDrive(speed, inches, inches, timeoutSeconds, false);
