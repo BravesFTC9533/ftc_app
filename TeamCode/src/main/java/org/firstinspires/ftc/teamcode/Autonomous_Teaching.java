@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.sax.TextElementListener;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -101,15 +102,24 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         telemetry.update();
         initTfod();
 
-        double speed = 0.65;
+        double speed = config.getSpeed();
 
         telemetry.log().add("Completed Initialization. Good Luck!!!");
         telemetry.update();
 
+
+        holdStartingPosition();
+
         waitForStart();
 
-        state = DetectObjectsNonStop();
 
+        waitForDelayStart();
+
+
+
+
+
+        state = DetectObjectsNonStop();
         PushOffGoldObject(speed, state);
 
         //drop down
@@ -218,8 +228,23 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         return GoldPosition.UNKNOWN;
     }
 
+    void holdStartingPosition(){
+        robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.motorLift.setTargetPosition(0);
+        robot.motorLift.setPower(1);
+    }
 
 
+    void waitForDelayStart(){
+        double delay = config.getDelayStart();
+        ElapsedTime time = new ElapsedTime();
+        if(delay > 0 ) {
+
+            while(opModeIsActive() && time.seconds() < delay) {
+                idle();
+            }
+        }
+    }
 
 
 
