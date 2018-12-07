@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
 
 import java.util.List;
@@ -36,6 +37,8 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         RIGHT,
         UNKNOWN
     }
+
+    Config config;
 
     private boolean loop;
     private GoldPosition state;
@@ -80,10 +83,12 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         telemetry.log().add("Setting up hardware");
         telemetry.update();
-        Initialize(hardwareMap, false); //Four wheel drive is true meaning that it will run a four wheel drive
+        Initialize(hardwareMap, true); //Four wheel drive is true meaning that it will run a four wheel drive
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
+        config = new Config(hardwareMap.appContext);
         //ComposeTelemetryPreStart();
+
 
         telemetry.log().add("Setting up vuforia");
         telemetry.update();
@@ -284,11 +289,11 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             driveStraight(speed, 8, 1);
         } else if(gp == gpLeft) {
             telemetry.log().add("Gold Position Is In The Left Position");
-            turn45(TurnDirection.COUNTERCLOCKWISE);
+            turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
             driveStraight(speed, 20, 1);
         } else if(gp == gpRight) {
             telemetry.log().add("Gold Position Is In The Right Position");
-            turn45(TurnDirection.CLOCKWISE);
+            turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
             driveStraight(speed, 20, 1);
         }
     }
