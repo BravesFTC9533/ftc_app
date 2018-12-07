@@ -30,6 +30,19 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         COUNTERCLOCKWISE
     }
 
+    enum GoldPosition {
+        CENTER,
+        LEFT,
+        RIGHT,
+        UNKNOWN
+    }
+
+    private boolean loop;
+    private GoldPosition state;
+
+    private GoldPosition gpCenter = GoldPosition.CENTER;
+    private GoldPosition gpRight = GoldPosition.RIGHT;
+    private GoldPosition gpLeft = GoldPosition.LEFT;
 
     private static final long pauseTimeBetweenSteps = 1000;
 
@@ -86,7 +99,10 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         waitForStart();
 
-        DetectObjectsNonStop();
+        state = DetectObjectsNonStop();
+
+        PushOffGoldObject(speed, state);
+
         //drop down
 
         //driveStraight(.5, 24, 10);
@@ -96,13 +112,11 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         //Silver(speed);
 
 
-
-
-
     }
 
 
-    private void DetectObjectsNonStop() {
+    private GoldPosition DetectObjectsNonStop() {
+        loop = false;
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
@@ -121,44 +135,44 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Total Object Detected", updatedRecognitions.size());
                         //if (updatedRecognitions.size() == 3) {
-                            //missingDetectionCounter = 0;
-                            int goldMineralX = -1;
-                            int goldMineralY = -1;
-                            int silverMineral1X = -1;
-                            int silverMineral1Y = -1;
-                            int silverMineral2X = -1;
-                            int silverMineral2Y = -1;
+                        //missingDetectionCounter = 0;
+                        int goldMineralX = -1;
+                        int goldMineralY = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral1Y = -1;
+                        int silverMineral2X = -1;
+                        int silverMineral2Y = -1;
 
-                            for (Recognition recognition : updatedRecognitions) {
+                        for (Recognition recognition : updatedRecognitions) {
 
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    goldMineralX = (int) recognition.getLeft();
-                                    goldMineralY = (int) recognition.getTop();
-                                } else if (silverMineral1X == -1) {
-                                    silverMineral1X = (int) recognition.getLeft();
-                                    silverMineral1Y = (int) recognition.getTop();
-                                } else {
-                                    silverMineral2X = (int) recognition.getLeft();
-                                    silverMineral2Y = (int) recognition.getTop();
-                                }
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                goldMineralX = (int) recognition.getLeft();
+                                goldMineralY = (int) recognition.getTop();
+                            } else if (silverMineral1X == -1) {
+                                silverMineral1X = (int) recognition.getLeft();
+                                silverMineral1Y = (int) recognition.getTop();
+                            } else {
+                                silverMineral2X = (int) recognition.getLeft();
+                                silverMineral2Y = (int) recognition.getTop();
                             }
-                            telemetry.log().add("Gold     - %d / %d", goldMineralX, goldMineralY);
-                            telemetry.log().add("Silver 1 - %d / %d", silverMineral1X, silverMineral1Y);
-                            telemetry.log().add("Silver 2 - %d / %d", silverMineral2X, silverMineral2Y);
+                        }
+                        telemetry.log().add("Gold     - %d / %d", goldMineralX, goldMineralY);
+                        telemetry.log().add("Silver 1 - %d / %d", silverMineral1X, silverMineral1Y);
+                        telemetry.log().add("Silver 2 - %d / %d", silverMineral2X, silverMineral2Y);
 
 
-                            if (goldMineralY != -1 && silverMineral1Y != -1 && silverMineral2Y != -1) {
-                                if (goldMineralY < silverMineral1Y && goldMineralY < silverMineral2Y) {
-                                    telemetry.log().add("Gold Mineral Position - Left");
-                                    //return GoldPosition.LEFT;
-                                } else if (goldMineralY > silverMineral1Y && goldMineralY > silverMineral2Y) {
-                                    telemetry.log().add("Gold Mineral Position - Right");
-                                    //return GoldPosition.RIGHT;
-                                } else {
-                                    telemetry.log().add("Gold Mineral Position - Center");
-                                    //return GoldPosition.CENTER;
-                                }
+                        if (goldMineralY != -1 && silverMineral1Y != -1 && silverMineral2Y != -1) {
+                            if (goldMineralY < silverMineral1Y && goldMineralY < silverMineral2Y) {
+                                telemetry.log().add("Gold Mineral Position - Left");
+                                return GoldPosition.LEFT;
+                            } else if (goldMineralY > silverMineral1Y && goldMineralY > silverMineral2Y) {
+                                telemetry.log().add("Gold Mineral Position - Right");
+                                return GoldPosition.RIGHT;
+                            } else {
+                                telemetry.log().add("Gold Mineral Position - Center");
+                                return GoldPosition.CENTER;
                             }
+                        }
 //                        } else if(updatedRecognitions.size() == 2) {
 //                            missingDetectionCounter++;
 //                            telemetry.log().add("Missing Detection Count: %d", missingDetectionCounter);
@@ -187,11 +201,13 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
                     telemetry.update();
                 }
             }
-            if(tfod != null) {
+            if (tfod != null) {
                 tfod.deactivate();
             }
         }
+        return GoldPosition.UNKNOWN;
     }
+
 
 
 
@@ -260,82 +276,19 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         turnDegrees(TurnDirection.COUNTERCLOCKWISE, 90);
     }
 
-    void Silver(double speed) {
-
-        emitStatus("Move out from lander");
-        //move out from lander 2 inches
-        driveStraight(speed, 12, 3);
-        pause();
-
-
-        emitStatus("Turn some");
-        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 90);
-        pause();
-
-        emitStatus("Get closer to image");
-        driveStraight(speed, 19, 3);
-        pause();
-
-        turnDegrees(TurnDirection.CLOCKWISE, 20);
-        pause();
-
-        emitStatus("Turn to face image");
-        //detect image and turn to face image
-        double hypotenuse = silver_turn_to_image();
-        pause();
-
-        if(hypotenuse == 0)
-        {
-            emitStatus("Could not find image");
-            return;
+    void PushOffGoldObject(double speed, GoldPosition gp) {
+        if(gp == gpCenter) {
+            telemetry.log().add("Gold Position Is In The Center Position");
+            driveStraight(speed, 8, 1);
+        } else if(gp == gpLeft) {
+            telemetry.log().add("Gold Position Is In The Left Position");
+            turn45(TurnDirection.COUNTERCLOCKWISE);
+            driveStraight(speed, 20, 1);
+        } else if(gp == gpRight) {
+            telemetry.log().add("Gold Position Is In The Right Position");
+            turn45(TurnDirection.CLOCKWISE);
+            driveStraight(speed, 20, 1);
         }
-
-        turnDegrees(TurnDirection.COUNTERCLOCKWISE, hypotenuse - 10);
-//        double distaneToDriveToImage = hypotenuse - 40;
-//        driveStraight(speed, distaneToDriveToImage, 5);
-
-        //drive to image staying off wall about 10 inches
-//        double distanceToDriveToImage = hypotenuse - 20;
-//        currentStatus = "Drive to image wall";
-//        driveStraight(speed, distanceToDriveToImage, 5);
-//
-//
-//        currentStatus = "Turn towards depot";
-//        //turn towards depot
-//        double new_angle = 90 - angle;
-//        turnDegrees(TurnDirection.COUNTERCLOCKWISE, new_angle);
-//
-//
-//        currentStatus = "Move to depot";
-//        //calculate new movement and move to depot
-//        double new_x = 20*Math.sin(angle);
-//        double distance_to_depot_wall = (6*12) + new_x;
-//        double move_to_depot_wall = distance_to_depot_wall - 15;
-//        driveStraight(speed, move_to_depot_wall, 5);
-//
-
-
-//
-//        driveStraight(speed, 14, 5);
-//        pause();
-//
-//        //turn left
-//        turn90(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(speed, 44, 5);
-//        pause();
-//
-//        turn45(TurnDirection.COUNTERCLOCKWISE, speed);
-//        pause();
-//
-//        driveStraight(speed, 57, 5);
-//        pause();
-//
-//        driveStraight(1, -86, 20);
-//        pause();
-
-
     }
 
     void Gold(double speed) {
