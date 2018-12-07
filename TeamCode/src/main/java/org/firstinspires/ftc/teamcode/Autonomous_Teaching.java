@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -46,9 +47,13 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     private GoldPosition gpCenter = GoldPosition.CENTER;
     private GoldPosition gpRight = GoldPosition.RIGHT;
     private GoldPosition gpLeft = GoldPosition.LEFT;
+    private GoldPosition gpUnknown = GoldPosition.UNKNOWN;
 
     private static final long pauseTimeBetweenSteps = 1000;
 
+    Random rand = new Random();
+    int max = 3;
+    int min = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -295,6 +300,9 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             telemetry.log().add("Gold Position Is In The Right Position");
             turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
             driveStraight(speed, 20, 1);
+        } else if(gp == gpUnknown) {
+            telemetry.log().add("Could Not Find Gold Block Picking A Place To Go! :(");
+            int value = rand.nextInt((max - min) + 1) + min;
         }
     }
 
