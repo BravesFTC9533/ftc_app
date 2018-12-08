@@ -4,6 +4,8 @@ import android.sax.TextElementListener;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -44,19 +46,28 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     private boolean loop;
     private GoldPosition state;
+//
+//    private GoldPosition gpCenter = GoldPosition.CENTER;
+//    private GoldPosition gpRight = GoldPosition.RIGHT;
+//    private GoldPosition gpLeft = GoldPosition.LEFT;
+//    private GoldPosition gpUnknown = GoldPosition.UNKNOWN;
 
-    private GoldPosition gpCenter = GoldPosition.CENTER;
-    private GoldPosition gpRight = GoldPosition.RIGHT;
-    private GoldPosition gpLeft = GoldPosition.LEFT;
-    private GoldPosition gpUnknown = GoldPosition.UNKNOWN;
-
-    private static final long pauseTimeBetweenSteps = 1000;
+    private static final long pauseTimeBetweenSteps = 100;
 
     int max = 3;
     int min = 0;
 
+    public static double NEW_P = 10;
+    public static double NEW_I = 3.0;
+    public static double NEW_D = 0.0;
+
+
+    private boolean doDrop = true;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
+
 
 
 
@@ -71,8 +82,24 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         config = new Config(hardwareMap.appContext);
 
+//        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, NEW_P, 0, 0);
+//        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, NEW_P, NEW_I, NEW_D);
+
+
+        PIDFCoefficients pidfrtp = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+        PIDFCoefficients pidfrue = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("RTP", "P:%2f I:%2f D:%2f F:%2f", pidfrtp.p, pidfrtp.i, pidfrtp.d, pidfrtp.f);
+        telemetry.addData("RUE", "P:%2f I:%2f D:%2f F:%2f", pidfrue.p, pidfrue.i, pidfrue.d, pidfrue.f);
+
+        robot.updatePID(config.getKP(), config.getKI(), config.getKD());
+
         Config.Colors color = config.getColor();
         Config.Positions position = config.getPosition();
+
+
+        robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         telemetry.log().add("Setting up vuforia");
@@ -88,29 +115,43 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         telemetry.update();
 
 
+
         holdStartingPosition();
 
         waitForStart();
 
+        robot.toggleLights();
+
+        //driveStraight(1, 5*12, 1000);
+
         waitForDelayStart();
 
-        pause();
+        //pause();
 
-        dropToGround();
-
-        pause();
-        state = DetectObjectsNonStop();
-        PushOffGoldObject(speed, state);
-
-
-        pause();
-        if(position == Config.Positions.GOLD) {
-            Gold(speed);
-        } else {
-            Silver(speed);
+        if(doDrop) {
+            dropToGround();
+            pause();
         }
 
-        pause();
+
+        robot.toggleLights();
+        state = DetectObjectsNonStop();
+        robot.toggleLights();
+
+        robot.motorIntake.setPower(-config.getIntakePower());
+        PushOffGoldObject(speed, state);
+        robot.motorIntake.setPower(0);
+
+
+
+//        pause();
+//        if(position == Config.Positions.GOLD) {
+//            Gold(speed);
+//        } else {
+//            Silver(speed);
+//        }
+//
+//        pause();
 
 
     }
@@ -118,7 +159,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     private GoldPosition DetectObjectsNonStop() {
         loop = false;
-        robot.toggleLights();
+
 
         ElapsedTime timer = new ElapsedTime();
         if (opModeIsActive()) {
@@ -233,17 +274,79 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
         robot.motorLift.setPower(1);
-        while(opModeIsActive() && robot.motorLift.isBusy()) {
+
+        robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
+        robot.motorSwing.setPower(config.getSwingArmPower());
+
+        while(opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
             idle();
         }
+
+
     }
+
+    void PushOffGoldObject(double speed, GoldPosition gp) {
+
+        driveStraight(speed, 6, 2);
+
+        switch (gp){
+            case LEFT:
+                telemetry.log().add("Gold Position Is In The Left Position");
+                turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
+                break;
+            case RIGHT:
+                telemetry.log().add("Gold Position Is In The Right Position");
+                turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
+                break;
+            case CENTER:
+                telemetry.log().add("Gold Position Is In The Center Position");
+                break;
+            case UNKNOWN:
+                telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
+                break;
+        }
+
+        driveStraight(speed, 24, 3);
+        pause();
+        driveStraight(speed, -24, 3);
+
+        //turn back to center
+        switch (gp){
+            case LEFT:
+                turnDegrees (TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
+                break;
+            case RIGHT:
+                turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
+                break;
+
+        }
+
+    }
+
 
 
     void Silver(double speed) {
 
-    }
-    void Gold(double speed) {
 
+
+    }
+
+    void Gold(double speed) {
+        //drive close to minerals 1*12
+        driveStraight(speed, 8, 2);
+        //turn CW 90 degrees
+        turn90(TurnDirection.CLOCKWISE);
+        //drive backwards towards wall 2.75*12
+        driveStraight(speed, -33, 4);
+        //turn CCW 52 degrees
+        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 52);
+        //drive fw 4.5*12
+        driveStraight(speed, 54, 4);
+        //todo (africa): boot off trophy we bless the rains
+
+        //drive bw 6*12
+        driveStraight(speed, -72, 5);
 
     }
 
@@ -305,34 +408,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         return hypotenuse;
 
     }
-
-    void Silver2(double speed){
-        //driveStraight(speed, 24, 10);
-
-        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 90);
-    }
-
-    void PushOffGoldObject(double speed, GoldPosition gp) {
-        robot.toggleLights();
-        if(gp == gpCenter) {
-            telemetry.log().add("Gold Position Is In The Center Position");
-            driveStraight(speed, 20, 1);
-        } else if(gp == gpLeft) {
-            telemetry.log().add("Gold Position Is In The Left Position");
-            turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
-            driveStraight(speed, 20, 1);
-        } else if(gp == gpRight) {
-            telemetry.log().add("Gold Position Is In The Right Position");
-            turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
-            driveStraight(speed, 20, 1);
-        } else if(gp == gpUnknown) {
-            telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
-            driveStraight(speed, 20, 1);
-        }
-    }
-
-
-
     void driveStraight(double speed, double inches, double timeoutSeconds) {
         encoderDrive(speed, inches, inches, timeoutSeconds, false);
     }
@@ -350,52 +425,5 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         telemetry.log().add(status);
     }
 
-    private void detectParticles() {
-        if (opModeIsActive()) {
-            /** Activate Tensor Flow Object Detection. */
-            if (tfod != null) {
-                tfod.activate();
-            }
-
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
-                            int goldMineralX = -1;
-                            int silverMineral1X = -1;
-                            int silverMineral2X = -1;
-                            for (Recognition recognition : updatedRecognitions) {
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    goldMineralX = (int) recognition.getLeft();
-                                } else if (silverMineral1X == -1) {
-                                    silverMineral1X = (int) recognition.getLeft();
-                                } else {
-                                    silverMineral2X = (int) recognition.getLeft();
-                                }
-                            }
-                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Left");
-                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Right");
-                                } else {
-                                    telemetry.addData("Gold Mineral Position", "Center");
-                                }
-                            }
-                        }
-                        telemetry.update();
-                    }
-                }
-            }
-        }
-
-        if (tfod != null) {
-            tfod.shutdown();
-        }
-    }
 
 }

@@ -32,6 +32,13 @@ public class Config {
     private final String SWINGARM_POWER = "swingArmPower";
     private final String MAX_SWING_TICKS = "swingArmMaxTicks";
 
+
+    private final String KP = "kp";
+    private final String KI = "ki";
+    private final String KD = "kd";
+
+
+
     private Colors _color;
     private Positions _position;
     private double _delayStart;
@@ -52,6 +59,10 @@ public class Config {
     private int _liftSilverTicks;
     private int _liftGoldTicks;
     private double _swingArmPower;
+
+    private double _kp;
+    private double _ki;
+    private double _kd;
 
 
     public Oreantation getPHONEOREANTATION () { return _phoneOreantation; }
@@ -120,6 +131,16 @@ public class Config {
     public double getSwingArmPower() { return _swingArmPower;  }
     public void setSwingArmPower(double _swingArmPower) { this._swingArmPower = _swingArmPower;   }
 
+
+    public double getKP() { return  _kp; }
+    public void setKP(double value) {this._kp = value;}
+
+    public double getKI() { return  _ki; }
+    public void setKI(double value) {this._ki = value;}
+
+    public double getKD() { return  _kd; }
+    public void setKD(double value) {this._kd = value;}
+
     public void save() {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(COLOR, _color.name());
@@ -145,6 +166,9 @@ public class Config {
 
         editor.putFloat(SWINGARM_POWER, (float)_swingArmPower);
 
+        editor.putFloat(KP, (float)_kp);
+        editor.putFloat(KI, (float)_ki);
+        editor.putFloat(KD, (float)_kd);
 
         editor.commit();
 
@@ -259,6 +283,10 @@ public class Config {
         _liftGoldTicks = sp.getInt(LIFT_GOLD, 120);
 
         _swingArmPower = sp.getFloat(SWINGARM_POWER, 0.5f);
+
+        _kp = sp.getFloat(KP, 10f);
+        _ki = sp.getFloat(KI, 10f);
+        _kd = sp.getFloat(KD, 10f);
     }
 
 }

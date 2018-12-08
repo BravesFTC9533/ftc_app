@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -259,7 +261,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         encoderDrive(speed, -turnInches, turnInches, 5.0, false);
     }
     public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees) {
-        turnDegrees(direction, degrees, 0.6);
+        turnDegrees(direction, degrees, 0.75);
     }
 
 
@@ -267,7 +269,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         turnDegrees(direction, 90, speed);
     }
     public void turn90(Autonomous_Teaching.TurnDirection direction) {
-        turn90(direction, 0.5);
+        turn90(direction, 0.75);
     }
 
     public void turn45(Autonomous_Teaching.TurnDirection direction, double speed) {
@@ -275,7 +277,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
     }
 
     public void turn45(Autonomous_Teaching.TurnDirection direction) {
-        turn45(direction, 0.5);
+        turn45(direction, 0.75);
     }
 
 
@@ -302,6 +304,13 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         return  targetVisible;
     }
 
+
+    private void setVelocity(double tps) {
+        ((DcMotorEx)robot.motorFrontLeft).setVelocity(tps);
+        ((DcMotorEx)robot.motorFrontRight).setVelocity(tps);
+        ((DcMotorEx)robot.motorBackLeft).setVelocity(tps);
+        ((DcMotorEx)robot.motorBackRight).setVelocity(tps);
+    }
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -370,15 +379,40 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
                 differenceLeft = Math.abs(Math.abs(targetLeft) - Math.abs(currentLeft));
 
                 if(maxed) {
-                    double newSpeed = Easing.Interpolate(1 - (differenceLeft / scale), Easing.Functions.QuinticEaseIn);
-                    currentSpeed = newSpeed;
-                    if(currentSpeed < 0.4) {
-                        currentSpeed = 0.4;
+                    //double newSpeed = Easing.Interpolate(1 - (differenceLeft / scale), Easing.Functions.CubicEaseIn);
+
+//                    double ease = Easing.Interpolate((float)differenceLeft / (float)scale, Easing.Functions.SineEaseIn);
+//
+
+                    //double newSpeed = (1 - ease) * 600; //  (Easing.Interpolate(1f - ((float)differenceLeft / (float)scale), Easing.Functions.QuinticEaseIn)) * 600;
+
+                    double newSpeed = 0;
+                    if( ((float)differenceLeft / (float)scale) < .5f) {
+                        newSpeed = (600 * speed) * .25;
                     }
+                    else
+                    {
+                        newSpeed = (600 * speed);
+                    }
+
+                    //if(newSpeed < 100) { newSpeed = 100; }
+                    setVelocity(newSpeed);
+
+//                    currentSpeed = newSpeed;
+//                    if(currentSpeed < 0.4) {
+//                        currentSpeed = 0.4;
+//                    }
                 }
                 else if(currentSpeed < speed) {
-                    multiplier = Easing.Interpolate(runtime.seconds() * 4, Easing.Functions.CubicEaseOut);
+                    multiplier = Easing.Interpolate(runtime.seconds() *2, Easing.Functions.CubicEaseOut);
+                    if(multiplier>=1) { maxed = true; }
+
                     currentSpeed = speed * multiplier;
+                    if(currentSpeed > speed) {
+                        currentSpeed = speed;
+                    }
+                    setVelocity(currentSpeed * 600);
+                    //robot.setPower(currentSpeed, currentSpeed);
                 }
 
 
@@ -391,8 +425,16 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
                 if(currentSpeed >= speed) {
                     currentSpeed = speed;
                     maxed = true;
+
+
                 }
-                robot.setPower(currentSpeed, currentSpeed);
+//                if(!maxed) {
+//                    robot.setPower(currentSpeed, currentSpeed);
+//                }
+
+                //600 tps
+                //((125)*288) / 60 = tps
+
 
 
                 // Display it for the driver.

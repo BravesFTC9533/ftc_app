@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
@@ -50,7 +52,7 @@ public class Robot {
 
 
 
-        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -76,7 +78,7 @@ public class Robot {
 
             motorBackLeft = hardwareMap.dcMotor.get("bl");
             motorBackRight = hardwareMap.dcMotor.get("br");
-            motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+            motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
             motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -200,6 +202,46 @@ public class Robot {
         }
     }
 
+
+    public void SetPIDCoefficients(DcMotor.RunMode runMode, double new_p, double new_i, double new_d) {
+        PIDCoefficients new_pid = new PIDCoefficients(new_p, new_i, new_d);
+
+        ((DcMotorEx)motorFrontLeft).setPIDCoefficients(runMode, new_pid);
+        ((DcMotorEx)motorFrontRight).setPIDCoefficients(runMode, new_pid);
+        if(fourWheelDrive)
+        {
+            ((DcMotorEx)motorBackLeft).setPIDCoefficients(runMode, new_pid);
+            ((DcMotorEx)motorBackRight).setPIDCoefficients(runMode, new_pid);
+
+        }
+    }
+
+    public void updatePID(double p, double i, double d) {
+        PIDCoefficients pidNew = new PIDCoefficients(p, i, d);
+
+
+        ((DcMotorEx)motorFrontLeft).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)motorFrontRight).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)motorBackLeft).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)motorBackRight).setVelocityPIDFCoefficients(p, i, d, 0);
+
+        ((DcMotorEx)motorFrontLeft).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)motorFrontRight).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)motorBackLeft).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)motorBackRight).setPositionPIDFCoefficients(p);
+//
+//        ((DcMotorEx)motorFrontLeft).setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+//        ((DcMotorEx)motorFrontRight).setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+//        ((DcMotorEx)motorBackLeft).setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+//        ((DcMotorEx)motorBackRight).setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+
+//
+//        ((DcMotorEx)motorFrontLeft).setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidNew);
+//        ((DcMotorEx)motorFrontRight).setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidNew);
+//        ((DcMotorEx)motorBackLeft).setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidNew);
+//        ((DcMotorEx)motorBackRight).setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidNew);
+
+    }
 
 
     public void setPower(double left, double right) {

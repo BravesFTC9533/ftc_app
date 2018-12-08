@@ -47,9 +47,9 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Initial Turn CCW", 90, 0, 1, config.get_initialTurnDegreesCounterClockwise());
 
         menu.addOption("Lift Reverse", Config.Directions.class, config.getLiftReverse() ? Config.Directions.REVERSE : Config.Directions.NORMAL);
-//        menu.addOption("kP", 1000, 0, 0.01, config.kp);
-//        menu.addOption("kI", 1000, 0, 0.01, config.ki);
-//        menu.addOption("kD", 1000, 0, 0.01, config.kd);
+        menu.addOption("kP", 1000, 0, 0.01, config.getKP());
+        menu.addOption("kI", 1000, 0, 0.01, config.getKI());
+        menu.addOption("kD", 1000, 0, 0.01, config.getKD());
 
         menu.setGamepad(gamepad1);
         menu.setTelemetry(telemetry);
@@ -86,8 +86,14 @@ public class AutonomousConfig extends LinearOpMode {
             config.setSwingArmPower(Double.parseDouble(menu.getCurrentChoiceOf("Swingarm Power")));
             config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Max Light Brightness")));
 
-            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CW")));
-            config.setMaxLightBrightness(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CCW")));
+            config.set_initialTurnDegreesClockwise(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CW")));
+            config.set_initialTurnDegreesCounterClockwise(Double.parseDouble(menu.getCurrentChoiceOf("Initial Turn CCW")));
+
+
+            config.setKP(Double.parseDouble(menu.getCurrentChoiceOf("kP")));
+            config.setKI(Double.parseDouble(menu.getCurrentChoiceOf("kI")));
+            config.setKD(Double.parseDouble(menu.getCurrentChoiceOf("kD")));
+
 
             switch (menu.getCurrentChoiceOf("Position")) {
                 case "SILVER":

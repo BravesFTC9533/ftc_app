@@ -57,8 +57,8 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 }
             });
             telemetry.addLine("Controls:");
-            telemetry.addLine("A)  Lift motor up (auto)");
-            telemetry.addLine("Y)  Lift motor down (auto)");
+            telemetry.addLine("A)  Lift motor down (auto)");
+            telemetry.addLine("Y)  Lift motor up (auto)");
             telemetry.addLine("X)  Intake +");
             telemetry.addLine("B)  Stop all motors");
             telemetry.addLine("RB) Swingarm up (auto)");
