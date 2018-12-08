@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.common.IDrive;
 import org.firstinspires.ftc.teamcode.common.MecanumDrive;
 
 @TeleOp(name = "Practice Mech bot", group = "Practice")
+@Disabled
 public class PracticeBot_Teleop extends LinearOpMode implements FtcGamePad.ButtonHandler {
 
 
