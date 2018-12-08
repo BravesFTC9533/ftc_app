@@ -82,27 +82,8 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
     private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed) {
         switch (button) {
-
-        }
-    }
-
-    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
-        switch (button) {
-            case FtcGamePad.GAMEPAD_Y:
-                if(pressed) {
-
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
-                    robot.motorLift.setPower(1);
-                    //robot.motorLift.setPower(-1);
-                }
-                else {
-                    //robot.motorLift.setPower(0);
-                }
-
-                break;
             case FtcGamePad.GAMEPAD_B:
-                if(pressed) {
+                if (pressed) {
                     robot.motorSwing.setPower(0);
                     robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -110,17 +91,6 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                     robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
                 break;
-            case FtcGamePad.GAMEPAD_A:
-                if(pressed) {
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.motorLift.setTargetPosition(50);
-                    robot.motorLift.setPower(1);
-                } else {
-                    //robot.motorLift.setPower(0);
-                }
-
-                break;
-
             case FtcGamePad.GAMEPAD_X:
                 if(pressed) {
                     //robot.togglePicker();
@@ -215,11 +185,41 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 break;
             case FtcGamePad.GAMEPAD_BACK:
                 if(pressed) {
-                   drive.setIsReverse(!drive.getIsReverse());
+                    drive.setIsReverse(!drive.getIsReverse());
                 } else {
 
                 }
                 break;
+        }
+    }
+
+    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
+        switch (button) {
+            case FtcGamePad.GAMEPAD_Y:
+                if(pressed) {
+
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
+                    robot.motorLift.setPower(1);
+                    //robot.motorLift.setPower(-1);
+                }
+                else {
+                    //robot.motorLift.setPower(0);
+                }
+
+                break;
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.motorLift.setTargetPosition(50);
+                    robot.motorLift.setPower(1);
+                } else {
+                    //robot.motorLift.setPower(0);
+                }
+
+                break;
+
+
         }
     }
     @Override
