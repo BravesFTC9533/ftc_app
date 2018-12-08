@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.FtcGamePad;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
+import org.firstinspires.ftc.teamcode.common.Robot;
 
 @TeleOp(name = "TeleOp Teaching", group = "Tutorials")
 public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGamePad.ButtonHandler {
@@ -188,6 +189,16 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                     drive.setIsReverse(!drive.getIsReverse());
                 } else {
 
+                }
+                break;
+            case FtcGamePad.GAMEPAD_Y:
+                if (pressed) {
+                    robot.toggleBox(Robot.Box.RIGHT);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_A:
+                if (pressed) {
+                    robot.toggleBox(Robot.Box.LEFT);
                 }
                 break;
         }

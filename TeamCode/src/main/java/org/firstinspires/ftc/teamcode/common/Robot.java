@@ -121,17 +121,17 @@ public class Robot {
 
     //TODO Fix toggle for Left and Right
     public void toggleBox (Box box) {
-        if (box == Box.LEFT) {
-            if(boxLeft.getPosition() > 0) {
-                boxLeft.setPosition(0);
-            } else if(boxLeft.getPosition() < 1) {
+        if(box == Box.LEFT) {
+            if(boxLeft.getPosition() == 0) {
                 boxLeft.setPosition(1);
+            } else if(boxLeft.getPosition() == 1) {
+                boxLeft.setPosition(0);
             }
-        } else if (box == Box.RIGHT) {
-            if(boxRight.getPosition() > 0) {
-                boxRight.setPosition(0);
-            } else if(boxRight.getPosition() < 1) {
+        } else if(box == Box.RIGHT) {
+            if(boxRight.getPosition() == 0) {
                 boxRight.setPosition(1);
+            } else if (boxLeft.getPosition() == 1) {
+                boxLeft.setPosition(0);
             }
         }
     }
