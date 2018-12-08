@@ -128,8 +128,7 @@ public class Autonomous_Test extends Teaching_BaseLinearOpMode {
     // Main Programming Chunk
 
     void Silver(double speed) {
-        //trophyArm.setPosition(1.0);
-
+        robot.toggleBoxRight();
     }
 
     //Call Later

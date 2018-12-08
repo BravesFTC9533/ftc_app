@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Main Mecanum Drive", group="Mecanum")
-
+@Disabled
 public class MecanumDrive_OpMode extends LinearOpMode {
 
     // Declare OpMode members.

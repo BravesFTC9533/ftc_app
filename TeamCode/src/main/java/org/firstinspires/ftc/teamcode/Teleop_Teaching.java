@@ -26,18 +26,14 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
         Initialize(hardwareMap, true);
         setDrive(new GTADrive(robot, driverGamePad));
 
-
+        robot.boxLeft.setPosition(0);
+        robot.boxRight.setPosition(0);
 
         robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         waitForStart();
-
-
-
-
-
 
         while(opModeIsActive())
         {
@@ -67,6 +63,8 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
             telemetry.addLine("DD) Swingarm -");
             telemetry.addLine("DL) Lift motor -");
             telemetry.addLine("DR) Lift motor +");
+            telemetry.addLine("OP-Y) Right Servo Motor");
+            telemetry.addLine("OP-X) Left Servo Motor");
             telemetry.addLine();
 
 
@@ -102,16 +100,20 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 break;
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(pressed) {
-                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.motorSwing.setPower(config.getSwingArmPower());
+                    if(robot.motorSwing.getCurrentPosition() > 0) {
+                        robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorSwing.setPower(config.getSwingArmPower());
+                    }
                 } else {
                     robot.motorSwing.setPower(0);
                 }
                 break;
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.motorSwing.setPower(-config.getSwingArmPower());
+                    if(robot.motorSwing.getCurrentPosition() > 0) {
+                        robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorSwing.setPower(-config.getSwingArmPower());
+                    }
                 } else {
                     robot.motorSwing.setPower(0);
                 }
@@ -119,16 +121,24 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(pressed) {
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.motorLift.setPower(-1);
+                    if(robot.motorLift.getCurrentPosition() > 0) {
+                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorLift.setPower(-1);
+                    } else {
+                        robot.motorLift.setPower(0);
+                    }
                 } else {
                     robot.motorLift.setPower(0);
                 }
                 break;
             case FtcGamePad.GAMEPAD_DPAD_RIGHT:
                 if(pressed) {
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.motorLift.setPower(1);
+                    if(robot.motorLift.getCurrentPosition() > 0) {
+                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorLift.setPower(1);
+                    } else {
+                        robot.motorLift.setPower(0);
+                    }
                 } else {
                     robot.motorLift.setPower(0);
                 }
@@ -193,12 +203,14 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 break;
             case FtcGamePad.GAMEPAD_Y:
                 if (pressed) {
-                    robot.toggleBox(Robot.Box.RIGHT);
+                    telemetry.log().add("Opening The Right Box");
+                    robot.toggleBoxRight();
                 }
                 break;
             case FtcGamePad.GAMEPAD_A:
                 if (pressed) {
-                    robot.toggleBox(Robot.Box.LEFT);
+                    telemetry.log().add("Opening The Left Box");
+                    robot.toggleBoxLeft();
                 }
                 break;
         }
@@ -206,31 +218,35 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
 
     private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
         switch (button) {
-            case FtcGamePad.GAMEPAD_Y:
-                if(pressed) {
 
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
-                    robot.motorLift.setPower(1);
-                    //robot.motorLift.setPower(-1);
+            case FtcGamePad.GAMEPAD_B:
+                if (pressed) {
+                    robot.toggleLights();
                 }
-                else {
-                    //robot.motorLift.setPower(0);
-                }
-
-                break;
-            case FtcGamePad.GAMEPAD_A:
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.motorLift.setTargetPosition(50);
-                    robot.motorLift.setPower(1);
+                    if(robot.motorLift.getCurrentPosition() > 0) {
+                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorLift.setPower(-1);
+                    } else {
+                        robot.motorLift.setPower(0);
+                    }
                 } else {
-                    //robot.motorLift.setPower(0);
+                    robot.motorLift.setPower(0);
                 }
-
                 break;
-
-
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if(pressed) {
+                    if(robot.motorLift.getCurrentPosition() > 0) {
+                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorLift.setPower(1);
+                    } else {
+                        robot.motorLift.setPower(0);
+                    }
+                } else {
+                    robot.motorLift.setPower(0);
+                }
+                break;
         }
     }
     @Override

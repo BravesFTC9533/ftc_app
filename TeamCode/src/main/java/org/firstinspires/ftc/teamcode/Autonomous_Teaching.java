@@ -138,7 +138,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         state = DetectObjectsNonStop();
         robot.toggleLights();
 
-        robot.motorIntake.setPower(-config.getIntakePower());
+        robot.motorIntake.setPower(-1);
         PushOffGoldObject(speed, state);
         robot.motorIntake.setPower(0);
 
@@ -419,6 +419,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     public void waitForTick(long periodMs) {
         sleep(periodMs);
     }
+
 
     private void emitStatus(String status)
     {

@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Dhavals.code;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="Joystick_Drive", group = "Linear Opmode")
-
+@Disabled
 public class Joystick_Drive extends LinearOpMode {
 
     DcMotor leftMotor;
