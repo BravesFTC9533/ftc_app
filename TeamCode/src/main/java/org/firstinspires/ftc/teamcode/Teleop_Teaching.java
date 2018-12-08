@@ -98,47 +98,35 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                     robot.motorIntake.setPower(0);
                 }
                 break;
-            case FtcGamePad.GAMEPAD_DPAD_UP:
-                if(pressed) {
-                    if(robot.motorSwing.getCurrentPosition() > 0) {
-                        robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        robot.motorSwing.setPower(config.getSwingArmPower());
-                    }
-                } else {
-                    robot.motorSwing.setPower(0);
-                }
-                break;
-            case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                if(pressed) {
-                    if(robot.motorSwing.getCurrentPosition() > 0) {
-                        robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        robot.motorSwing.setPower(-config.getSwingArmPower());
-                    }
-                } else {
-                    robot.motorSwing.setPower(0);
-                }
-                break;
-
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(pressed) {
-                    if(robot.motorLift.getCurrentPosition() > 0) {
-                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        robot.motorLift.setPower(-1);
-                    } else {
-                        robot.motorLift.setPower(0);
-                    }
+                    robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.motorSwing.setPower(config.getSwingArmPower());
+
                 } else {
-                    robot.motorLift.setPower(0);
+                    robot.motorSwing.setPower(0);
                 }
                 break;
             case FtcGamePad.GAMEPAD_DPAD_RIGHT:
                 if(pressed) {
-                    if(robot.motorLift.getCurrentPosition() > 0) {
+                        robot.motorSwing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorSwing.setPower(-config.getSwingArmPower());
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(pressed) {
+                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.motorLift.setPower(-1);
+                } else {
+                    robot.motorLift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if(pressed) {
                         robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                         robot.motorLift.setPower(1);
-                    } else {
-                        robot.motorLift.setPower(0);
-                    }
                 } else {
                     robot.motorLift.setPower(0);
                 }
@@ -225,24 +213,16 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
                 }
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    if(robot.motorLift.getCurrentPosition() > 0) {
-                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        robot.motorLift.setPower(-1);
-                    } else {
-                        robot.motorLift.setPower(0);
-                    }
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.motorLift.setPower(-1);
                 } else {
                     robot.motorLift.setPower(0);
                 }
                 break;
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(pressed) {
-                    if(robot.motorLift.getCurrentPosition() > 0) {
-                        robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        robot.motorLift.setPower(1);
-                    } else {
-                        robot.motorLift.setPower(0);
-                    }
+                    robot.motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.motorLift.setPower(1);
                 } else {
                     robot.motorLift.setPower(0);
                 }

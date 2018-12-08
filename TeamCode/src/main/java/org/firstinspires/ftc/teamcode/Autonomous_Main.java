@@ -159,14 +159,14 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
 
     void Gold(double speed) {
-
+        //TODO Program The Gold Cases
     }
 
 
     // Main Programming Chunk
 
     void Silver(double speed) {
-        //TODO Start off with Tensor Flow and check to see where gold object is
+        //TODO Program The Silver Case
         telemetry.log().add("Turning on lights");
         robot.toggleLights();
         //telemetry.log().add("Lights on (%0.2f)", robot.lights.getPower());
@@ -174,14 +174,11 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
         telemetry.log().add("Turning off lights");
         robot.toggleLights();
 
-        //TODO Move towards the object and push it off the red square
         goldPosition(gp, speed);
 
         while(opModeIsActive()){
             idle();
         }
-
-        //TODO Drive into the depot making sure to be compatible with what side of the field we are on
     }
 
     //Call Later

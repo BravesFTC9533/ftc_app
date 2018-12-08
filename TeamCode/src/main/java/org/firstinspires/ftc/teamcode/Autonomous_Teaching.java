@@ -128,31 +128,34 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         //pause();
 
+        //Drop Down The Robot From The Lander
         if(doDrop) {
             dropToGround();
             pause();
         }
 
-
+        //Turn The Lights On
         robot.toggleLights();
+        //Find The Gold Object
         state = DetectObjectsNonStop();
+        //Turn Off The Lights
         robot.toggleLights();
 
+        //Turn On The Intake Motor In Reverse To Push Away The Gold Object
         robot.motorIntake.setPower(-1);
+        //Drive Into The Gold Object and Back
         PushOffGoldObject(speed, state);
+        //Turn Off The Intake Motor
         robot.motorIntake.setPower(0);
+        //Wait
+        pause();
 
-
-
-//        pause();
-//        if(position == Config.Positions.GOLD) {
+        //TODO Add back in after gold and silver classes are working
+//        if(config.getPosition() == Config.Positions.GOLD) {
 //            Gold(speed);
-//        } else {
+//        } else if(config.getPosition() == Config.Positions.SILVER) {
 //            Silver(speed);
 //        }
-//
-//        pause();
-
 
     }
 
@@ -327,12 +330,11 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
     void Silver(double speed) {
-
-
-
+        //TODO Program Silver Case
     }
 
     void Gold(double speed) {
+        //TODO Program Gold Case
         //drive close to minerals 1*12
         driveStraight(speed, 8, 2);
         //turn CW 90 degrees

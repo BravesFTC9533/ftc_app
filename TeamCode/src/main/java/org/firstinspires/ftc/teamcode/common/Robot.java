@@ -121,7 +121,7 @@ public class Robot {
 
     }
 
-    //TODO Fix toggle for Left and Right
+    //TODO Fix toggle for Left and Right (Still Not Working)
     public void toggleBoxLeft () {
         if(boxLeft.getPosition() >= 0.0) {
             boxLeft.setPosition(0);

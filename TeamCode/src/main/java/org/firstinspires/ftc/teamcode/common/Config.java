@@ -271,9 +271,7 @@ public class Config {
 
         //_liftReverse =
         _tensorFlowYThreshold = sp.getFloat(TENSORFLOW_Y_THRESHOLD, 360.0f);
-        //TODO change to right for robot for competition.
         _phoneOreantation = Oreantation.toOreantation(sp.getString(PHONEOREANTATION, "LEFT"));
-        //TODO change to REAL for robot for competition
         _robotSpecs = RobotSpecs.toSpecs(sp.getString(ROBOTSPECS, "TEST"));
         _initialTurnDegreesClockwise = sp.getFloat(INITIAL_TURN_CLOCKWISE, 70);
         _initialTurnDegreesCounterClockwise = sp.getFloat(INITIAL_TURN_COUNTERCLOCKWISE, 70);
