@@ -48,21 +48,25 @@ public class MainOpMode extends OpMode
 
     private Utils utils;
 
-    public DcMotor fl= null;
-    public DcMotor fr = null;
-    public DcMotor bl = null;
-    public DcMotor br = null;
+    private DcMotor fl= null;
+    private DcMotor fr = null;
+    private DcMotor bl = null;
+    private DcMotor br = null;
 
-    public DcMotor swing = null;
-    public DcMotor lift = null;
+    private DcMotor swing = null;
+    private DcMotor lift = null;
 
-    public DcMotor intake = null;
-    public DcMotor lights = null;
+    private DcMotor intake = null;
+    private DcMotor lights = null;
 
-    public Servo boxLeft = null;
-    public Servo boxRight = null;
+    private Servo boxLeft = null;
+    private Servo boxRight = null;
 
     private boolean reverse = false;
+
+    //TODO Fix because numbers are just placeholders
+    private final int TICKS_FOR_LIFT_ENCODER = 2240 / 2;
+    private final int TICKS_FOR_SWING_ENCODER = 2240 / 2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -186,8 +190,10 @@ public class MainOpMode extends OpMode
             }
         }
         if(gamepad1.dpad_up) {
-            //TODO Add a stop for maximum height
-            lift.setPower(1);
+            //Check to make sure that the lift isn't already up
+            if(lift.getCurrentPosition() != TICKS_FOR_LIFT_ENCODER) {
+                lift.setPower(1);
+            }
         } else {
             lift.setPower(0);
         }
@@ -214,8 +220,10 @@ public class MainOpMode extends OpMode
             utils.toggleBox(Utils.Box.RIGHT);
         }
         if(gamepad2.dpad_up) {
-            //TODO Add a stop for maximum height
-            lift.setPower(1);
+            //Add a stop for maximum height
+            if(lift.getCurrentPosition() != TICKS_FOR_LIFT_ENCODER) {
+                lift.setPower(1);
+            }
         } else {
             lift.setPower(0);
         }
@@ -228,8 +236,10 @@ public class MainOpMode extends OpMode
             lift.setPower(0);
         }
         if(gamepad2.dpad_right) {
-            //TODO Add a stop for maximum distance
-            swing.setPower(1);
+            //Check to make sure that the swing arm isn't already out
+            if(swing.getCurrentPosition() != TICKS_FOR_SWING_ENCODER) {
+                swing.setPower(1);
+            }
         } else {
             swing.setPower(0);
         }
