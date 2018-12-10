@@ -151,7 +151,7 @@ public class MainOpMode extends OpMode
             rightPower = -gamepad1.right_stick_y;
         } else {
             leftPower = -gamepad1.left_stick_y;
-            rightPower = -gamepad1.right_stick_x;
+            rightPower = gamepad1.right_stick_y;
         }
 
         controller1();
@@ -192,11 +192,11 @@ public class MainOpMode extends OpMode
         }
         if(gamepad1.right_bumper) {
             telemetry.log().add("Reversed Robot");
-            reverse = true;
-        }
-        if(gamepad1.left_bumper) {
-            telemetry.log().add("Stoped Robot Reverse");
-            reverse = false;
+            if(reverse) {
+                reverse = false;
+            } else {
+                reverse = true;
+            }
         }
         if(gamepad1.dpad_up) {
             lift.setPower(1);
