@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -105,13 +106,18 @@ public class MainOpMode extends OpMode
         //Reset Encoders To 0
         //Encoders Do 2240 ticks per revelation
 
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        swing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //Set encoders in counting mode
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        swing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        //Set motor encoders
+        fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /*
@@ -138,34 +144,31 @@ public class MainOpMode extends OpMode
         double rightPower;
 
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
+        double turn = gamepad1.right_stick_x;
 
-        rightPower = -gamepad1.left_stick_y;
-        leftPower = gamepad1.right_stick_y;
+        if(!reverse) {
+            leftPower = gamepad1.left_stick_y;
+            rightPower = -gamepad1.right_stick_y;
+        } else {
+            leftPower = -gamepad1.left_stick_y;
+            rightPower = -gamepad1.right_stick_x;
+        }
 
         controller1();
         controller2();
 
-        if(reverse) {
-            fl.setDirection(DcMotor.Direction.REVERSE);
-            fr.setDirection(DcMotor.Direction.REVERSE);
-            bl.setDirection(DcMotor.Direction.REVERSE);
-            br.setDirection(DcMotor.Direction.REVERSE);
-        } else if(!reverse) {
-            fl.setDirection(DcMotor.Direction.FORWARD);
-            fr.setDirection(DcMotor.Direction.FORWARD);
-            bl.setDirection(DcMotor.Direction.FORWARD);
-            br.setDirection(DcMotor.Direction.FORWARD);
-        }
 
         fl.setPower(leftPower);
         fr.setPower(rightPower);
         bl.setPower(leftPower);
         br.setPower(rightPower);
 
+
         // Show the elapsed game time and wheel power.
         //Remove when ready for real competition
+        telemetry.addData("Lift Motor Encoder", lift.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Reverse", reverse);
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         telemetry.update();
     }
@@ -188,25 +191,21 @@ public class MainOpMode extends OpMode
             lights.setPower(0);
         }
         if(gamepad1.right_bumper) {
-            if(reverse) {
-                reverse = true;
-            } else {
-                reverse = false;
-            }
+            telemetry.log().add("Reversed Robot");
+            reverse = true;
+        }
+        if(gamepad1.left_bumper) {
+            telemetry.log().add("Stoped Robot Reverse");
+            reverse = false;
         }
         if(gamepad1.dpad_up) {
-            //Check to make sure that the lift isn't already up
-            if(lift.getCurrentPosition() != TICKS_FOR_LIFT_ENCODER) {
-                lift.setPower(1);
-            }
+            lift.setPower(1);
         } else {
             lift.setPower(0);
         }
         if(gamepad1.dpad_down) {
             //Check to make sure the arm isn't already down
-            if(lift.getCurrentPosition() > 0) {
-                lift.setPower(-1);
-            }
+            lift.setPower(-1);
         } else {
             lift.setPower(0);
         }
@@ -218,41 +217,29 @@ public class MainOpMode extends OpMode
         } else {
             intake.setPower(0);
         }
-        if(gamepad2.right_bumper) {
-            toggleBox(Box.RIGHT);
-        }
-        if(gamepad2.left_bumper) {
-            toggleBox(Box.RIGHT);
-        }
         if(gamepad2.dpad_up) {
             //Add a stop for maximum height
-            if(lift.getCurrentPosition() != TICKS_FOR_LIFT_ENCODER) {
-                lift.setPower(1);
-            }
+            lift.setPower(1);
+
         } else {
             lift.setPower(0);
         }
         if(gamepad2.dpad_down) {
             //Check to make sure the arm isn't already down
-            if(lift.getCurrentPosition() > 0) {
-                lift.setPower(-1);
-            }
+            lift.setPower(-1);
+
         } else {
             lift.setPower(0);
         }
         if(gamepad2.dpad_right) {
             //Check to make sure that the swing arm isn't already out
-            if(swing.getCurrentPosition() != TICKS_FOR_SWING_ENCODER) {
-                swing.setPower(1);
-            }
+            swing.setPower(1);
         } else {
             swing.setPower(0);
         }
         if(gamepad2.dpad_left) {
             //Check to make sure the arm isn't already down
-            if(swing.getCurrentPosition() > 0) {
-                swing.setPower(-1);
-            }
+            swing.setPower(-1);
         } else {
             swing.setPower(0);
         }
@@ -269,19 +256,4 @@ public class MainOpMode extends OpMode
         lights.setPower(0);
     }
 
-    public void toggleBox(Box box) {
-        if(box == Box.LEFT) {
-            if(boxLeft.getPosition() > 0) {
-                boxLeft.setPosition(0.5);
-            } else {
-                boxLeft.setPosition(0);
-            }
-        } else if(box == Box.RIGHT) {
-            if(boxRight.getPosition() > 0) {
-                boxRight.setPosition(0.5);
-            } else {
-                boxRight.setPosition(0);
-            }
-        }
-    }
 }
