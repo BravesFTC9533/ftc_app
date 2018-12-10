@@ -59,8 +59,8 @@ public class MainOpMode extends OpMode
     private DcMotor intake = null;
     private DcMotor lights = null;
 
-    private Servo boxLeft = null;
-    private Servo boxRight = null;
+    public Servo boxLeft = null;
+    public Servo boxRight = null;
 
     private boolean reverse = false;
 
@@ -71,6 +71,11 @@ public class MainOpMode extends OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
+    enum Box {
+        LEFT, RIGHT
+    }
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized, Good Luck");
@@ -214,10 +219,10 @@ public class MainOpMode extends OpMode
             intake.setPower(0);
         }
         if(gamepad2.right_bumper) {
-            utils.toggleBox(Utils.Box.RIGHT);
+            toggleBox(Box.RIGHT);
         }
         if(gamepad2.left_bumper) {
-            utils.toggleBox(Utils.Box.RIGHT);
+            toggleBox(Box.RIGHT);
         }
         if(gamepad2.dpad_up) {
             //Add a stop for maximum height
@@ -262,5 +267,21 @@ public class MainOpMode extends OpMode
         lift.setPower(0);
         intake.setPower(0);
         lights.setPower(0);
+    }
+
+    public void toggleBox(Box box) {
+        if(box == Box.LEFT) {
+            if(boxLeft.getPosition() > 0) {
+                boxLeft.setPosition(0.5);
+            } else {
+                boxLeft.setPosition(0);
+            }
+        } else if(box == Box.RIGHT) {
+            if(boxRight.getPosition() > 0) {
+                boxRight.setPosition(0.5);
+            } else {
+                boxRight.setPosition(0);
+            }
+        }
     }
 }
