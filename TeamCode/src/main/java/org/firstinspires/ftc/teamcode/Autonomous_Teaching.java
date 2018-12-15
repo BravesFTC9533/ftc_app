@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
+import org.firstinspires.ftc.teamcode.common.Quad;
 
 import java.util.List;
 import java.util.Random;
@@ -81,16 +82,16 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
         config = new Config(hardwareMap.appContext);
-
-//        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, NEW_P, 0, 0);
-//        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, NEW_P, NEW_I, NEW_D);
-
-
-        PIDFCoefficients pidfrtp = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
-        PIDFCoefficients pidfrue = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        telemetry.addData("RTP", "P:%2f I:%2f D:%2f F:%2f", pidfrtp.p, pidfrtp.i, pidfrtp.d, pidfrtp.f);
-        telemetry.addData("RUE", "P:%2f I:%2f D:%2f F:%2f", pidfrue.p, pidfrue.i, pidfrue.d, pidfrue.f);
+//
+////        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, NEW_P, 0, 0);
+////        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, NEW_P, NEW_I, NEW_D);
+//
+//
+//        PIDFCoefficients pidfrtp = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+//        PIDFCoefficients pidfrue = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        telemetry.addData("RTP", "P:%2f I:%2f D:%2f F:%2f", pidfrtp.p, pidfrtp.i, pidfrtp.d, pidfrtp.f);
+//        telemetry.addData("RUE", "P:%2f I:%2f D:%2f F:%2f", pidfrue.p, pidfrue.i, pidfrue.d, pidfrue.f);
 
         robot.updatePID(config.getKP(), config.getKI(), config.getKD());
 
@@ -120,7 +121,8 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         waitForStart();
 
-        robot.toggleLights();
+
+        //robot.toggleLights();
 
         //driveStraight(1, 5*12, 1000);
 
@@ -173,7 +175,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
             int missingDetectionCounter = 0;
 
-            while (opModeIsActive() && timer.seconds() < 2) {
+            while (opModeIsActive() && timer.seconds() < 3) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -410,8 +412,25 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         return hypotenuse;
 
     }
-    void driveStraight(double speed, double inches, double timeoutSeconds) {
-        encoderDrive(speed, inches, inches, timeoutSeconds, false);
+//    void driveStraight(double speed, double inches, double timeoutSeconds) {
+//        encoderDrive(speed, inches, inches, timeoutSeconds, false);
+//    }
+
+    private void driveStraight(double targetSpeed, double inches, double timeoutSeconds){
+        Quad<Integer, Integer, Integer, Integer> positions = robot.setNewPositionFourWheel(inches);
+
+
+        robot.setRunToPosition();
+        robot.setPower(targetSpeed , targetSpeed);
+
+        ElapsedTime timer = new ElapsedTime();
+        while(opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
+            idle();
+        }
+
+        robot.stop();
+        robot.setRunUsingEncoders();
+
     }
 
     void pause() {
