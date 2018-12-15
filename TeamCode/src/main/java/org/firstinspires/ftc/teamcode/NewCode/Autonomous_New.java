@@ -42,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.common.Config;
 
 import java.util.List;
 
@@ -99,6 +100,7 @@ public class Autonomous_New extends OpMode
     private boolean dropDown = true;
 
     private Robot robot;
+    Config config;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -110,6 +112,9 @@ public class Autonomous_New extends OpMode
         Robot robot = new Robot();
         robot.init(hardwareMap);
 
+        config = new Config(hardwareMap.appContext);
+
+        robot.updatePID(config.getKP(), config.getKI(), config.getKD());
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 
@@ -247,15 +252,19 @@ public class Autonomous_New extends OpMode
         robot.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.fl.setPower(speed);
-        robot.fr.setPower(speed);
-        robot.bl.setPower(speed);
-        robot.br.setPower(speed);
 
         robot.fl.setTargetPosition(robot.fl.getCurrentPosition() + (int)ticks);
         robot.fr.setTargetPosition(robot.fr.getCurrentPosition() + (int)ticks);
         robot.bl.setTargetPosition(robot.bl.getCurrentPosition() + (int)ticks);
         robot.br.setTargetPosition(robot.br.getCurrentPosition() + (int)ticks);
+
+
+        robot.fl.setPower(speed);
+        robot.fr.setPower(speed);
+        robot.bl.setPower(speed);
+        robot.br.setPower(speed);
+
+
     }
 
 }

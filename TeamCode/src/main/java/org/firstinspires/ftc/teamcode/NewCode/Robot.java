@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.NewCode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
@@ -48,6 +50,22 @@ public class Robot {
         br.setDirection(DcMotor.Direction.REVERSE);
         lift.setDirection(DcMotor.Direction.REVERSE);
     }
+
+    public void updatePID(double p, double i, double d) {
+
+        ((DcMotorEx)fl).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)fr).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)bl).setVelocityPIDFCoefficients(p, i, d, 0);
+        ((DcMotorEx)br).setVelocityPIDFCoefficients(p, i, d, 0);
+
+        ((DcMotorEx)fl).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)fr).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)bl).setPositionPIDFCoefficients(p);
+        ((DcMotorEx)br).setPositionPIDFCoefficients(p);
+
+    }
+
+
 
     public void toggleBox(NewLinearOpMode.Box box) {
         if(box == NewLinearOpMode.Box.LEFT) {
