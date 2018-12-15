@@ -95,6 +95,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         robot.updatePID(config.getKP(), config.getKI(), config.getKD());
 
+        holdStartingPosition();
         Config.Colors color = config.getColor();
         Config.Positions position = config.getPosition();
 
@@ -117,7 +118,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
 
-        holdStartingPosition();
+
 
         waitForStart();
 
@@ -136,30 +137,57 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             pause();
         }
 
+        detectGoldMineral();
+        pause();
+
+        driveStraight(speed, 6, 2);
+        pause();
+
+        resetLiftAndSwing();
+        pause();
+
+        pushOffGoldMineral();
+        pause();
+
+        //Wait
+        pause();
+
+
+
+
+
+
+        robot.turnOffAllMotors();
+
+
+
+        //TODO Add back in after gold and silver classes are working
+        if(config.getPosition() == Config.Positions.GOLD) {
+            Gold(speed);
+        } else if(config.getPosition() == Config.Positions.SILVER) {
+            Silver(speed);
+        }
+
+    }
+
+    private void pushOffGoldMineral() {
+        //Turn On The Intake Motor In Reverse To Push Away The Gold Object
+        robot.motorIntake.setPower(-1);
+        //Drive Into The Gold Object and Back
+        PushOffGoldObject(config.getSpeed(), state);
+        //Turn Off The Intake Motor
+        robot.motorIntake.setPower(0);
+    }
+
+    private void detectGoldMineral() {
         //Turn The Lights On
         robot.toggleLights();
         //Find The Gold Object
         state = DetectObjectsNonStop();
         //Turn Off The Lights
         robot.toggleLights();
-
-        //Turn On The Intake Motor In Reverse To Push Away The Gold Object
-        robot.motorIntake.setPower(-1);
-        //Drive Into The Gold Object and Back
-        PushOffGoldObject(speed, state);
-        //Turn Off The Intake Motor
-        robot.motorIntake.setPower(0);
-        //Wait
-        pause();
-
-        //TODO Add back in after gold and silver classes are working
-//        if(config.getPosition() == Config.Positions.GOLD) {
-//            Gold(speed);
-//        } else if(config.getPosition() == Config.Positions.SILVER) {
-//            Silver(speed);
-//        }
-
     }
+
 
 
     private GoldPosition DetectObjectsNonStop() {
@@ -275,25 +303,42 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         }
     }
 
-    void dropToGround() {
-        robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
-        robot.motorLift.setPower(1);
+    void resetLiftAndSwing() {
+        if(opModeIsActive()) {
 
-        robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
-        robot.motorSwing.setPower(config.getSwingArmPower());
+            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorSwing.setTargetPosition(0);
+            robot.motorSwing.setPower(1);
 
-        while(opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
-            idle();
+            robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorLift.setTargetPosition(0);
+            robot.motorLift.setPower(1);
+
+            while (opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
+                idle();
+            }
         }
+    }
+    void dropToGround() {
+        if(opModeIsActive()) {
+            robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
+            robot.motorLift.setPower(1);
 
+            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
+            robot.motorSwing.setPower(config.getSwingArmPower());
 
+            while(opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
+                idle();
+            }
+
+        }
     }
 
     void PushOffGoldObject(double speed, GoldPosition gp) {
 
-        driveStraight(speed, 6, 2);
+
 
         switch (gp){
             case LEFT:
@@ -416,20 +461,25 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 //        encoderDrive(speed, inches, inches, timeoutSeconds, false);
 //    }
 
+
+
     private void driveStraight(double targetSpeed, double inches, double timeoutSeconds){
-        Quad<Integer, Integer, Integer, Integer> positions = robot.setNewPositionFourWheel(inches);
+
+        if(opModeIsActive()) {
+            Quad<Integer, Integer, Integer, Integer> positions = robot.setNewPositionFourWheel(inches);
 
 
-        robot.setRunToPosition();
-        robot.setPower(targetSpeed , targetSpeed);
+            robot.setRunToPosition();
+            robot.setPower(targetSpeed, targetSpeed);
 
-        ElapsedTime timer = new ElapsedTime();
-        while(opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
-            idle();
+            ElapsedTime timer = new ElapsedTime();
+            while (opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
+                idle();
+            }
+
+            robot.stop();
+            robot.setRunUsingEncoders();
         }
-
-        robot.stop();
-        robot.setRunUsingEncoders();
 
     }
 

@@ -141,6 +141,9 @@ public class Robot {
     public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double inches){
         return  setNewPositionFourWheel(inches, inches, inches, inches);
     }
+    public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double leftInches, double rightInches){
+        return  setNewPositionFourWheel(leftInches, rightInches, leftInches, rightInches);
+    }
 
     public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double fl, double fr, double rl, double rr) {
         Quad<Integer, Integer, Integer, Integer> target = calculateNewPositionsFourWheel(fl, fr, rl, rr);
@@ -280,5 +283,13 @@ public class Robot {
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
         }
+    }
+
+    public void turnOffAllMotors() {
+        stop();
+        motorSwing.setPower(0);
+        motorLift.setPower(0);
+        motorIntake.setPower(0);
+        lights.setPower(0);
     }
 }

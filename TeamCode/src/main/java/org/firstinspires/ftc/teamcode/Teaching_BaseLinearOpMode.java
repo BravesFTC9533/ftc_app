@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.common.Easing;
 import org.firstinspires.ftc.teamcode.common.FtcGamePad;
 import org.firstinspires.ftc.teamcode.common.IDrive;
+import org.firstinspires.ftc.teamcode.common.Quad;
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 import java.util.ArrayList;
@@ -258,7 +259,9 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         if(direction == Autonomous_Teaching.TurnDirection.CLOCKWISE) {
             turnInches = -turnInches;
         }
-        encoderDrive(speed, -turnInches, turnInches, 5.0, false);
+        PIDencoderDrive(speed, -turnInches, turnInches, 5.0);
+
+        //encoderDrive(speed, -turnInches, turnInches, 5.0, false);
     }
     public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees) {
         turnDegrees(direction, degrees, 0.75);
@@ -312,6 +315,23 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         ((DcMotorEx)robot.motorBackRight).setVelocity(tps);
     }
 
+
+    public void PIDencoderDrive(double targetSpeed, double leftInches, double rightInches, double timeoutSeconds){
+        Quad<Integer, Integer, Integer, Integer> positions = robot.setNewPositionFourWheel(leftInches, rightInches);
+
+        robot.setRunToPosition();
+        robot.setPower(targetSpeed , targetSpeed);
+
+        ElapsedTime timer = new ElapsedTime();
+        while(opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
+            idle();
+        }
+
+        robot.stop();
+        robot.setRunUsingEncoders();
+    }
+
+
     /*
      *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -320,7 +340,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void  encoderDrive(double speed,
+    public void  encoderDrive_old(double speed,
                              double leftInches, double rightInches,
                              double timeoutS, boolean holdPosition) {
 

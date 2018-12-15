@@ -416,7 +416,7 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
 
 
     void driveStraight(double speed, double inches, double timeoutSeconds) {
-        encoderDrive(speed, inches, inches, timeoutSeconds, false);
+        PIDencoderDrive(speed, inches, inches, timeoutSeconds);
     }
 
     void pause() {
