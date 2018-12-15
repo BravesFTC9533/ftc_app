@@ -125,6 +125,7 @@ public class Autonomous_New extends OpMode
         bl.setDirection(DcMotor.Direction.FORWARD);
         fr.setDirection(DcMotor.Direction.REVERSE);
         br.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -170,7 +171,7 @@ public class Autonomous_New extends OpMode
 
     private void dropDown() {
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setTargetPosition(-6905);
+        lift.setTargetPosition(6905);
         driveStraight(speed, 5);
         lift.setTargetPosition(0);
     }
