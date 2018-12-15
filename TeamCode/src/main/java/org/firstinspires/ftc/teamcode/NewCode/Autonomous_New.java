@@ -38,6 +38,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -56,13 +63,46 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Autonomous_New extends OpMode
 {
+
+    //Enums
+
+    enum Position {
+        LEFT, RIGHT, CENTER, UNKNOWN
+    }
+
+    private Position position;
+
+    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+
+    private static final String VUFORIA_KEY = "AeWceoD/////AAAAGWvk7AQGLUiTsyU4mSW7gfldjSCDQHX76lt9iPO5D8zaboG428rdS9WN0+AFpAlc/g4McLRAQIb5+ijFCPJJkLc+ynXYdhljdI2k9R4KL8t3MYk/tbmQ75st9VI7//2vNkp0JHV6oy4HXltxVFcEbtBYeTBJ9CFbMW+0cMNhLBPwHV7RYeNPZRgxf27J0oO8VoHOlj70OYdNYos5wvDM+ZbfWrOad/cpo4qbAw5iB95T5I9D2/KRf1HQHygtDl8/OtDFlOfqK6v2PTvnEbNnW1aW3vPglGXknX+rm0k8b0S7GFJkgl7SLq/HFNl0VEIVJGVQe9wt9PB6bJuxOMMxN4asy4rW5PRRBqasSM7OLl4W";
+
+    private VuforiaLocalizer vuforia;
+
+    private TFObjectDetector tfod;
+
+    //Driving
+
+    public static final double     REV_COUNTS_PER_MOTOR_REV = 288;      // eg: Rev Side motor
+    static final double            DRIVE_GEAR_REDUCTION    = 60.0 / 125.0 ;             // This is < 1.0 if geared UP
+    static final double            WHEEL_DIAMETER_INCHES   = 3.543 ;           // For figuring circumference
+    public static final double     COUNTS_PER_INCH = (REV_COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
     // Declare OpMode members.
+
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor fl = null;
     private DcMotor fr = null;
     private DcMotor bl = null;
     private DcMotor br = null;
+    private DcMotor lift = null;
+
+    private double speed = 1;
+
+    private boolean dropDown = true;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -88,6 +128,9 @@ public class Autonomous_New extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        initVuforia();
+        initTfod();
     }
 
     /*
@@ -102,7 +145,14 @@ public class Autonomous_New extends OpMode
      */
     @Override
     public void start() {
-        driveStraight(1, 10);
+        // Drop down from lander
+        if(dropDown) {
+            dropDown();
+        }
+        //Use Tenserflow To Detect Gold Position
+        position = detectObjects();
+        // Push Off Object
+        pushOffObject(position);
         runtime.reset();
     }
 
@@ -112,6 +162,82 @@ public class Autonomous_New extends OpMode
     @Override
     public void loop() {
 
+    }
+
+    private void pushOffObject(Position position) {
+
+    }
+
+    private void dropDown() {
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setTargetPosition(-6905);
+        driveStraight(speed, 5);
+        lift.setTargetPosition(0);
+    }
+
+    private Position detectObjects() {
+        if (tfod != null) {
+            tfod.activate();
+        }
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                if (updatedRecognitions.size() == 3) {
+                    int goldMineralX = -1;
+                    int silverMineral1X = -1;
+                    int silverMineral2X = -1;
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            goldMineralX = (int) recognition.getLeft();
+                        } else if (silverMineral1X == -1) {
+                            silverMineral1X = (int) recognition.getLeft();
+                        } else {
+                            silverMineral2X = (int) recognition.getLeft();
+                        }
+                    }
+                    if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                            telemetry.addData("Gold Mineral Position", "Left");
+                            return Position.LEFT;
+                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                            telemetry.addData("Gold Mineral Position", "Right");
+                            return Position.RIGHT;
+                        } else {
+                            telemetry.addData("Gold Mineral Position", "Center");
+                            return Position.CENTER;
+                        }
+                    }
+                }
+                telemetry.update();
+            }
+        }
+        return Position.UNKNOWN;
+    }
+
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+    }
+
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
     /*
@@ -124,9 +250,8 @@ public class Autonomous_New extends OpMode
 
     private void driveStraight(double speed, double inches) {
         double rotation;
-        double ticksPerInch = 26.19253330908099 / 2;
 
-        rotation = ticksPerInch * inches;
+        rotation = COUNTS_PER_INCH * inches;
 
         driveTicks(rotation, speed);
 
