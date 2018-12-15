@@ -92,6 +92,8 @@ public class NewLinearOpMode extends LinearOpMode {
 
         intake = hardwareMap.dcMotor.get("intake");
 
+        boot = hardwareMap.servo.get("boot");
+
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         swing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -104,7 +106,7 @@ public class NewLinearOpMode extends LinearOpMode {
         fr.setDirection(DcMotor.Direction.REVERSE);
         br.setDirection(DcMotor.Direction.REVERSE);
 
-
+        boot.setPosition(0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -225,6 +227,14 @@ public class NewLinearOpMode extends LinearOpMode {
             }
         } else {
             swing.setPower(0);
+        }
+        //==========================================================================================
+        if(gamepad.y) {
+            if(boot.getPosition() == 0) {
+                boot.setPosition(1);
+            } else {
+                boot.setPosition(0);
+            }
         }
     }
 }
