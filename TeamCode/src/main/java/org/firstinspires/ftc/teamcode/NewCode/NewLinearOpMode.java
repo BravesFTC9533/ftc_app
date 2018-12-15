@@ -230,11 +230,10 @@ public class NewLinearOpMode extends LinearOpMode {
         }
         //==========================================================================================
         if(gamepad.y) {
-            if(boot.getPosition() == 0) {
-                boot.setPosition(1);
-            } else {
-                boot.setPosition(0);
-            }
+           boot.setPosition(1);
+        }
+        if(gamepad.a) {
+            boot.setPosition(0);
         }
     }
 }
