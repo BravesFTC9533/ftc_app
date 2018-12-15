@@ -36,6 +36,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
     private Robot robot;
     private Config config;
 
+    private Utils utils;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -181,13 +183,13 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_LBUMPER:
                 if(pressed) {
-                    robot.toggleBox(Box.LEFT);
+                    utils.toggleBox(Box.LEFT);
                 }
                 break;
             //======================================================================================
             case FtcGamePad.GAMEPAD_RBUMPER:
                 if(pressed) {
-                    robot.toggleBox(Box.RIGHT);
+                    utils.toggleBox(Box.RIGHT);
                 }
                 break;
             //======================================================================================
@@ -201,7 +203,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
                 if(pressed) {
                     swinglift.resetArmPosition();
                 }
-        }
+                break;
+    }
     }
     @Override
     public void gamepadButtonEvent(FtcGamePad gamepad, int button, boolean pressed) {

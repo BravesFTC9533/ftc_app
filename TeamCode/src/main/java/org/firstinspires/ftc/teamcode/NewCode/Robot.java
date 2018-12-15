@@ -65,26 +65,4 @@ public class Robot {
 
     }
 
-
-
-    public void toggleBox(NewLinearOpMode.Box box) {
-        if(box == NewLinearOpMode.Box.LEFT) {
-            if(!boxLeftPositon) {
-                boxLeft.setPosition(1);
-                boxLeftPositon = true;
-            } else {
-                boxLeft.setPosition(0);
-                boxLeftPositon = false;
-            }
-        } else {
-            if(!boxRightPosition) {
-                boxRight.setPosition(1);
-                boxRightPosition = true;
-            } else {
-                boxRight.setPosition(0);
-                boxRightPosition = false;
-            }
-        }
-    }
-
 }
