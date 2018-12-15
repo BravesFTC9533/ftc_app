@@ -24,6 +24,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+    private SwingAndLiftController swinglift;
+
     public FtcGamePad driverGamePad;
     public FtcGamePad operatorGamePad;
 
@@ -186,6 +188,18 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             case FtcGamePad.GAMEPAD_RBUMPER:
                 if(pressed) {
                     robot.toggleBox(Box.RIGHT);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_Y:
+                if(pressed) {
+                    swinglift.dumpAuto();
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    swinglift.resetArmPosition();
                 }
         }
     }
