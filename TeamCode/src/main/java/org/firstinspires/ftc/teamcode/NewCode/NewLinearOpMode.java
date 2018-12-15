@@ -205,13 +205,50 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_Y:
                 if(pressed) {
-                    swinglift.dumpAuto();
+                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.lift.setTargetPosition(3500);
+                    robot.lift.setPower(1);
+
+                    while(opModeIsActive() && robot.lift.isBusy()){
+                        idle();
+                    }
+                    robot.lift.setPower(0);
+
+                    robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.swing.setTargetPosition(config.getMaxSwingTicks());
+                    robot.swing.setPower(config.getSwingArmPower());
+                    while(opModeIsActive() && robot.swing.isBusy()){
+                        idle();
+                    }
+                    robot.swing.setPower(0);
+                }
+
+                else {
+                    //robot.swing.setPower(0);
                 }
                 break;
             //======================================================================================
             case FtcGamePad.GAMEPAD_A:
                 if(pressed) {
-                    swinglift.resetArmPosition();
+                    robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.swing.setTargetPosition(0);
+                    robot.swing.setPower(config.getSwingArmPower());
+                    while(opModeIsActive() && robot.swing.isBusy()){
+                        idle();
+                    }
+                    robot.swing.setPower(0);
+
+                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.lift.setTargetPosition(0);
+                    robot.lift.setPower(1);
+
+                    while(opModeIsActive() && robot.lift.isBusy()){
+                        idle();
+                    }
+                    robot.lift.setPower(0);
+
+                } else {
+                    //robot.swing.setPower(0);
                 }
                 break;
     }
