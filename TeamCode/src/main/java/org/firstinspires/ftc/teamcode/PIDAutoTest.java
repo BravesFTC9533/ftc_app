@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
-import org.firstinspires.ftc.teamcode.common.Pair;
 import org.firstinspires.ftc.teamcode.common.Quad;
 import org.firstinspires.ftc.teamcode.common.SimpleMenu;
 
@@ -27,6 +21,7 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
     public static double NEW_D = 1.0;
     public static double NEW_KP = 0.1;
     public static double Kp = 0.1;
+    public static double Distance = 48;
 
     public static SimpleMenu menu = new SimpleMenu("Autonomous Menu");
 
@@ -46,6 +41,7 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
         menu.addOption("P", 1000, 0, 0.01, NEW_P);
         menu.addOption("I", 1000, 0, 0.01, NEW_I);
         menu.addOption("D", 1000, 0, 0.01, NEW_D);
+        menu.addOption("Dist", 12*12, 12, 0.1, Distance);
         menu.addOption("Kp", 1000, 0, 0.01, NEW_KP);
         menu.setGamepad(gamepad1);
         menu.setTelemetry(telemetry);
@@ -75,7 +71,7 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
             NEW_I = Double.parseDouble(menu.getCurrentChoiceOf("I"));
             NEW_D = Double.parseDouble(menu.getCurrentChoiceOf("D"));
             NEW_KP = Double.parseDouble(menu.getCurrentChoiceOf("Kp"));
-
+            Distance = Double.parseDouble(menu.getCurrentChoiceOf("Dist"));
             telemetry.update();
         }
 
@@ -101,7 +97,7 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
         robot.setRunToPosition();
         robot.setPower(targetSpeed , targetSpeed);
 
-        while(opModeIsActive() && robot.isBusy(true)) {
+        while(opModeIsActive() && robot.isBusy()) {
             idle();
         }
     }
