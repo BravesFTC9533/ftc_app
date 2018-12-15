@@ -4,7 +4,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class SwingAndLiftController {
 
-    private Robot robot;
+    private final Robot robot;
+
+
+    public SwingAndLiftController(Robot robot) {
+        this.robot = robot;
+    }
 
     public void dumpAuto() {
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);

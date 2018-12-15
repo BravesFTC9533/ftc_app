@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.NewCode;
 
 public class Utils {
 
-    private Robot robot;
+    private final Robot robot;
 
     private boolean boxLeftPositon = false;
     private boolean boxRightPosition = false;
 
+    public Utils(Robot robot){
+        this.robot = robot;
+    }
     public void toggleBox(NewLinearOpMode.Box box) {
         if(box == NewLinearOpMode.Box.LEFT) {
             if(!boxLeftPositon) {
