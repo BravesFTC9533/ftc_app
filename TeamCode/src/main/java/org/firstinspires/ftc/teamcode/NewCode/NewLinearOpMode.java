@@ -30,8 +30,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
     public FtcGamePad operatorGamePad;
 
     private boolean reverse;
-    private boolean boxLeftPositon = false;
-    private boolean boxRightPosition = false;
+
 
     private Robot robot;
     private Config config;
@@ -47,6 +46,9 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         robot.init(hardwareMap);
 
 
+        swinglift = new SwingAndLiftController(robot);
+        config = new Config(hardwareMap.appContext);
+        utils = new Utils(robot);
 
         driverGamePad = new FtcGamePad("driver", gamepad1, this);
         operatorGamePad = new FtcGamePad("operator", gamepad2, this);
