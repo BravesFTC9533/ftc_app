@@ -210,6 +210,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getRecognitions();
                     //List<Recognition> ourCollection = new ArrayList<>();
 
+
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Total Object Detected", updatedRecognitions.size());
                         //if (updatedRecognitions.size() == 3) {

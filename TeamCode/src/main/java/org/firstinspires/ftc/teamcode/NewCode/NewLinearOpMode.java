@@ -46,6 +46,11 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         robot = new Robot();
         robot.init(hardwareMap);
 
+
+
+        driverGamePad = new FtcGamePad("driver", gamepad1, this);
+        operatorGamePad = new FtcGamePad("operator", gamepad2, this);
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -68,6 +73,9 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             double leftPower;
             double rightPower;
 
+            driverGamePad.update();
+            operatorGamePad.update();
+
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
 
@@ -84,6 +92,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             robot.bl.setPower(leftPower);
             robot.br.setPower(rightPower);
             robot.fr.setPower(rightPower);
+
+
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Lift Encoder", robot.lift.getCurrentPosition());
