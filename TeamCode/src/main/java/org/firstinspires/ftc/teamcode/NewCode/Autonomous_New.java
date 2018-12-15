@@ -94,15 +94,11 @@ public class Autonomous_New extends OpMode
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor fl = null;
-    private DcMotor fr = null;
-    private DcMotor bl = null;
-    private DcMotor br = null;
-    private DcMotor lift = null;
-
     private double speed = 1;
 
     private boolean dropDown = true;
+
+    private Robot robot;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -111,21 +107,8 @@ public class Autonomous_New extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        fl = hardwareMap.dcMotor.get("frontleft");
-        fr = hardwareMap.dcMotor.get("frontright");
-        bl = hardwareMap.dcMotor.get("backleft");
-        br = hardwareMap.dcMotor.get("backright");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        fl.setDirection(DcMotor.Direction.FORWARD);
-        bl.setDirection(DcMotor.Direction.FORWARD);
-        fr.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.REVERSE);
-        lift.setDirection(DcMotor.Direction.REVERSE);
+        Robot robot = new Robot();
+        robot.init(hardwareMap);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -170,10 +153,10 @@ public class Autonomous_New extends OpMode
     }
 
     private void dropDown() {
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setTargetPosition(6905);
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setTargetPosition(6905);
         driveStraight(speed, 5);
-        lift.setTargetPosition(0);
+        robot.lift.setTargetPosition(0);
     }
 
     private Position detectObjects() {
@@ -259,20 +242,20 @@ public class Autonomous_New extends OpMode
     }
 
     private void driveTicks(double ticks, double speed) {
-        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        fl.setPower(speed);
-        fr.setPower(speed);
-        bl.setPower(speed);
-        br.setPower(speed);
+        robot.fl.setPower(speed);
+        robot.fr.setPower(speed);
+        robot.bl.setPower(speed);
+        robot.br.setPower(speed);
 
-        fl.setTargetPosition(fl.getCurrentPosition() + (int)ticks);
-        fr.setTargetPosition(fr.getCurrentPosition() + (int)ticks);
-        bl.setTargetPosition(bl.getCurrentPosition() + (int)ticks);
-        br.setTargetPosition(br.getCurrentPosition() + (int)ticks);
+        robot.fl.setTargetPosition(robot.fl.getCurrentPosition() + (int)ticks);
+        robot.fr.setTargetPosition(robot.fr.getCurrentPosition() + (int)ticks);
+        robot.bl.setTargetPosition(robot.bl.getCurrentPosition() + (int)ticks);
+        robot.br.setTargetPosition(robot.br.getCurrentPosition() + (int)ticks);
     }
 
 }
