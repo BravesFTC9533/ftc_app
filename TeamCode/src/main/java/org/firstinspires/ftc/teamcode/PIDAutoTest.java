@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
 import org.firstinspires.ftc.teamcode.common.Quad;
@@ -97,9 +99,14 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
         robot.setRunToPosition();
         robot.setPower(targetSpeed , targetSpeed);
 
-        while(opModeIsActive() && robot.isBusy()) {
+        ElapsedTime timer = new ElapsedTime();
+        while(opModeIsActive() && robot.isBusy() && timer.seconds() < 10.0) {
             idle();
         }
+
+        robot.stop();
+        robot.setRunUsingEncoders();
+
     }
 
 

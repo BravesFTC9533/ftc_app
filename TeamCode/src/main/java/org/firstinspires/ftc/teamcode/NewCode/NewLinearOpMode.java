@@ -9,11 +9,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.common.Config;
+import org.firstinspires.ftc.teamcode.common.FtcGamePad;
 
 
 @TeleOp(name="New: Linear OpMode", group="New")
 
-public class NewLinearOpMode extends LinearOpMode {
+public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHandler {
 
     enum Box {
         LEFT, RIGHT
@@ -22,16 +24,22 @@ public class NewLinearOpMode extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+    public FtcGamePad driverGamePad;
+    public FtcGamePad operatorGamePad;
+
     private boolean reverse;
     private boolean boxLeftPositon = false;
     private boolean boxRightPosition = false;
+
+    private Robot robot;
+    private Config config;
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        Robot robot = new Robot();
+        robot = new Robot();
         robot.init(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -59,10 +67,6 @@ public class NewLinearOpMode extends LinearOpMode {
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
 
-            //Call the conrollers
-            controller1(gamepad1, robot);
-            controller2(gamepad2, robot);
-
             //Check to see if the robot is in reverse
             if(!reverse) {
                 leftPower = -gamepad1.left_stick_y;
@@ -86,100 +90,116 @@ public class NewLinearOpMode extends LinearOpMode {
     }
 
     private void controller1(Gamepad gamepad, Robot robot) {
-        if(gamepad.dpad_up) {
-            if(robot.lift.getCurrentPosition() <= -6905) {
-                telemetry.log().add("Maximum Amount The Lift Motor Can Go");
-            } else {
-                robot.lift.setPower(-1);
-            }
-        } else {
-            robot.lift.setPower(0);
-        }
-        //==========================================================================================
-        if(gamepad.dpad_down) {
-            if(robot.lift.getCurrentPosition() >= 0) {
-                telemetry.log().add("Minimum Amount The Lif Motor Can Go");
-            } else {
-                robot.lift.setPower(1);
-            }
-        } else {
-            robot.lift.setPower(0);
-        }
-        //==========================================================================================
-        if(gamepad.right_bumper) {
-            if(reverse) {
-                reverse = false;
-            } else {
-                reverse = true;
-            }
+
+    }
+
+
+
+    private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed) {
+        switch (button) {
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if (pressed) {
+                    if(robot.lift.getCurrentPosition() >= 6905) {} else {
+                        robot.lift.setPower(1);
+                    }
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(pressed) {
+                    if(robot.lift.getCurrentPosition() <= 0) {} else {
+                        robot.lift.setPower(-1);
+                    }
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_B:
+                if(pressed) {
+                    if(robot.lights.getPower() != 0) {
+                        robot.lights.setPower(config.getMaxLightBrightness());
+                    } else {
+                        robot.lights.setPower(0);
+                    }
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(pressed) {
+                    reverse = !reverse;
+                }
+                break;
         }
     }
 
-    private void controller2(Gamepad gamepad, Robot robot) {
-        if(gamepad.dpad_up) {
-            if(robot.lift.getCurrentPosition() <= -6905) {
-                telemetry.log().add("Maximum Amount The Lift Motor Can Go");
-            } else {
-                robot.lift.setPower(-1);
-            }
-        } else {
-            robot.lift.setPower(0);
+    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
+        switch(button) {
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if (pressed) {
+                    if(robot.lift.getCurrentPosition() >= 6905) {} else {
+                        robot.lift.setPower(1);
+                    }
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(pressed) {
+                    if(robot.lift.getCurrentPosition() <= 0) {} else {
+                        robot.lift.setPower(-1);
+                    }
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_DPAD_LEFT:
+                if(pressed) {
+                    if(robot.swing.getCurrentPosition() <= 0) {} else {
+                        robot.swing.setPower(1);
+                    }
+                } else {
+                    robot.swing.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_DPAD_RIGHT:
+                if(pressed) {
+                    if(robot.swing.getCurrentPosition() >= 824) {} else {
+                        robot.swing.setPower(-1);
+                    }
+                } else {
+                    robot.swing.setPower(0);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_LBUMPER:
+                if(pressed) {
+                    robot.toggleBox(Box.LEFT);
+                }
+                break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(pressed) {
+                    robot.toggleBox(Box.RIGHT);
+                }
         }
-        //==========================================================================================
-        if(gamepad.dpad_down) {
-            if(robot.lift.getCurrentPosition() >= 0) {
-                telemetry.log().add("Minimum Amount The Lif Motor Can Go");
-            } else {
-                robot.lift.setPower(1);
-            }
-        } else {
-            robot.lift.setPower(0);
+    }
+    @Override
+    public void gamepadButtonEvent(FtcGamePad gamepad, int button, boolean pressed) {
+
+        if(gamepad == operatorGamePad) {
+            handleOperatorGamePad(gamepad, button, pressed);
         }
-        //==========================================================================================
-        if(gamepad.dpad_left) {
-            if(robot.swing.getCurrentPosition() >= 824) {}
-            else {
-                robot.swing.setPower(1);
-            }
-        } else {
-            robot.swing.setPower(0);
+        else if (gamepad == driverGamePad) {
+            handleDriverGamepad(gamepad, button, pressed);
         }
-        //==========================================================================================
-        if(gamepad.dpad_right) {
-            if(robot.swing.getCurrentPosition() <= 0) {}
-            else {
-                robot.swing.setPower(-1);
-            }
-        } else {
-            robot.swing.setPower(0);
-        }
-        //==========================================================================================
-        if(gamepad.right_bumper) {
-            toggleBox(Box.RIGHT, robot);
-        }
-        //==========================================================================================
-        if(gamepad.left_bumper) {
-            toggleBox(Box.LEFT, robot);
-        }
+
     }
 
-    private void toggleBox(Box box, Robot robot) {
-        if(box == Box.LEFT) {
-            if(!boxLeftPositon) {
-                robot.boxLeft.setPosition(1);
-                boxLeftPositon = true;
-            } else {
-                robot.boxLeft.setPosition(0);
-                boxLeftPositon = false;
-            }
-        } else {
-            if(!boxRightPosition) {
-                robot.boxRight.setPosition(1);
-                boxRightPosition = true;
-            } else {
-                robot.boxRight.setPosition(0);
-                boxRightPosition = false;
-            }
-        }
-    }
+
 }

@@ -24,7 +24,6 @@ public class AutonomousConfig extends LinearOpMode {
         menu.addOption("Position", Config.Positions.class, config.getPosition());
 
 
-
         menu.addOption("Max Lift Ticks", 10000, 0, 1, config.getMaxLiftTicks());
         menu.addOption("Lift Ticks - Silver", 10000, 0, 1, config.getLiftSilverTicks());
         menu.addOption("Lift Ticks - Gold", 10000, 0, 1, config.getLiftGoldTicks());
