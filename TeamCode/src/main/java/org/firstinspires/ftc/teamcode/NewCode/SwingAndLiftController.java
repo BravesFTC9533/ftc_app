@@ -19,12 +19,6 @@ public class SwingAndLiftController {
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while(robot.lift.isBusy()) {}
-
-        if(robot.lift.getCurrentPosition() < 3000) {
-            robot.lift.setTargetPosition(3000);
-        }
-
         robot.swing.setTargetPosition(0);
         robot.lift.setTargetPosition(0);
     }

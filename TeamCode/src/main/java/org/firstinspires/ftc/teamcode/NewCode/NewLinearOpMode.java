@@ -164,7 +164,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
                     if(robot.lift.getCurrentPosition() <= 0) {} else {
-                        robot.lift.setPower(-1);
+                        robot.lift.setPower(1);
                     }
                 } else {
                     robot.lift.setPower(0);
@@ -174,7 +174,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(pressed) {
                     if(robot.swing.getCurrentPosition() <= 0) {} else {
-                        robot.swing.setPower(1);
+                        robot.swing.setPower(-1);
                     }
                 } else {
                     robot.swing.setPower(0);
