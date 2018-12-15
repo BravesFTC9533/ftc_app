@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.GTADrive;
 import org.firstinspires.ftc.teamcode.common.Pair;
 import org.firstinspires.ftc.teamcode.common.Quad;
@@ -29,6 +30,7 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
 
     public static SimpleMenu menu = new SimpleMenu("Autonomous Menu");
 
+    Config config;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -36,6 +38,8 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
         Initialize(hardwareMap, true);
 
         setDrive(new GTADrive(robot, driverGamePad));
+
+        config = new Config(hardwareMap.appContext);
 
 
         menu.clearOptions();
@@ -72,11 +76,14 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
             NEW_D = Double.parseDouble(menu.getCurrentChoiceOf("D"));
             NEW_KP = Double.parseDouble(menu.getCurrentChoiceOf("Kp"));
 
-
             telemetry.update();
         }
 
 
+        config.setKP(NEW_P);
+        config.setKI(NEW_I);
+        config.setKD(NEW_D);
+        config.save();
 
     }
 
