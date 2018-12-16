@@ -106,14 +106,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         waitForStart();
 
-        if(!doDrop) {
-            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
-            robot.motorSwing.setPower(1);
-            while (opModeIsActive() && robot.motorSwing.isBusy()) {
-                idle();
-            }
-        }
 
         waitForDelayStart();
 
@@ -125,21 +117,18 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         }
 
         //try to detect the gold mineral
-        detectGoldMineral();
+        GoldPosition state = detectGoldMineral();
         pause();
 
+        robot.motorSwing.setTargetPosition(0);
+
+        //move off lander
         driveStraight(speed, 6, 2);
+        robot.motorIntake.setPower(-1);
         pause();
         pause();
         pause();
         pause();
-
-        pushOffGoldMineral();
-        pause();
-
-        //Wait
-        pause();
-
 
 
         //TODO Add back in after gold and silver classes are working
@@ -148,8 +137,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         } else if(config.getPosition() == Config.Positions.SILVER) {
             Silver(speed);
         }
-
-
 
         resetLiftAndSwing();
         pause();
@@ -166,13 +153,15 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         robot.motorIntake.setPower(0);
     }
 
-    private void detectGoldMineral() {
+    private GoldPosition detectGoldMineral() {
+
         //Turn The Lights On
         robot.toggleLights();
         //Find The Gold Object
-        state = DetectObjectsNonStop();
+        GoldPosition state = DetectObjectsNonStop();
         //Turn Off The Lights
         robot.toggleLights();
+        return  state;
     }
 
 
@@ -377,13 +366,102 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     }
 
 
+    void Gold(double speed){
+        switch (state){
+            case RIGHT:
+                Gold_Right(speed);
+                break;
+            case CENTER:
+                Gold_Center(speed);
+                break;
+            case LEFT:
+                Gold_Left(speed);
+                break;
+        }
+    }
+    void Gold_Right(double speed){
+
+        double turndegrees = config.get_initialTurnDegreesClockwise();
+//        move out 6"
+//        turn CW 38
+        turnDegrees(TurnDirection.CLOCKWISE, turndegrees);
+        pause();
+//        move fw 38"
+        driveStraight(speed, 38, 3);
+        pause();
+//        turn CW 38+90
+        turnDegrees(TurnDirection.CLOCKWISE, turndegrees+90);
+        pause();
+//        move bw 30"
+        driveStraight(speed, -30, 3);
+        pause();
+//        turn CCW 45
+        turn45(TurnDirection.COUNTERCLOCKWISE);
+        pause();
+//        boot
+        robot.boot.setPosition(1);
+        pause();
+//        turn ccw 45
+        turn45(TurnDirection.COUNTERCLOCKWISE);
+        pause();
+//        move bw 6*12"
+        driveStraight(1, -6*12, 10);
+
+    }
+    void Gold_Center(double speed){
+//        move fw 56"
+        driveStraight(speed, 56, 4);
+        pause();
+//        turn CW 90
+        turn90(TurnDirection.CLOCKWISE);
+        pause();
+//        move bw 9"
+        driveStraight(speed, -9, 2);
+        pause();
+//        boot
+        robot.boot.setPosition(1);
+        pause();
+//        move bw 9"
+        driveStraight(speed, -9, 2);
+        pause();
+//        turn CCW 45
+        turn45(TurnDirection.COUNTERCLOCKWISE);
+        pause();
+//        move bw 60"
+        driveStraight(speed, 60, 2);
+        pause();
+
+    }
+    void Gold_Left(double speed) {
+//
+//        turn CCW 38
+        turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
+        pause();
+//        move fw 49"
+        driveStraight(speed, 49, 4);
+        pause();
+//        turn CW 45+38
+        turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise() + 45);
+        pause();
+//        move fw 10.5
+        driveStraight(speed, 10.5, 4);
+        pause();
+//        boot
+//        move bw 63"
+        driveStraight(speed, -63, 4);
+        pause();
+    }
+
+
 
     //12in, 45 turn, 42in
     void Silver(double speed) {
         //TODO Program Silver Case
     }
 
-    void Gold(double speed) {
+
+
+    void Gold_Old(double speed) {
 
 
         switch(state) {
@@ -465,67 +543,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
 
-    double angle = 0;
-
-    double silver_turn_to_image() {
-        //start turning counterclockwise
-        //drive.drive(-0.25, 0.25);
-
-
-        ElapsedTime runtime = new ElapsedTime();
-        boolean foundImage = false;
-
-        double totalMove = 0;
-
-        /** Start tracking the data sets we care about. */
-        targetsRoverRuckus.activate();
-        while(opModeIsActive() )
-        {
-            turnDegrees(TurnDirection.CLOCKWISE, 10);
-            totalMove += 10;
-            if(this.locateVuforiaTarget())
-            {
-                foundImage = true;
-
-                emitStatus("Found Image and Is Moving");
-
-                break;
-            }
-            if(totalMove > 50) {
-                break;
-            }
-        }
-
-        drive.stop();
-        if(foundImage == false) {
-            emitStatus("Could not find image");
-            return 0;
-        }
-
-        VectorF translation = lastLocation.getTranslation();
-
-        float opposite = Math.abs(translation.get(0) / mmPerInch); //x
-        float adjacent = Math.abs(translation.get(1) / mmPerInch); //y
-        // express the rotation of the robot in degrees.
-        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-        double currentHeading = Math.abs(rotation.thirdAngle);
-        angle = Math.atan(opposite / adjacent);
-        double desiredAngle = 90-angle;
-        double movementAngle = currentHeading - desiredAngle;
-
-        turnDegrees((movementAngle < 0) ? TurnDirection.CLOCKWISE : TurnDirection.COUNTERCLOCKWISE, movementAngle);
-
-        double hypotenuse = Math.sqrt(opposite*opposite + adjacent*adjacent);
-
-        targetsRoverRuckus.deactivate();
-        return hypotenuse;
-
-    }
-//    void driveStraight(double speed, double inches, double timeoutSeconds) {
-//        encoderDrive(speed, inches, inches, timeoutSeconds, false);
-//    }
-
-
 
     private void driveStraight(double targetSpeed, double inches, double timeoutSeconds){
 
@@ -553,12 +570,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
     public void waitForTick(long periodMs) {
         sleep(periodMs);
-    }
-
-
-    private void emitStatus(String status)
-    {
-        telemetry.log().add(status);
     }
 
 
