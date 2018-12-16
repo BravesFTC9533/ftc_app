@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.common.VuforiaHelper;
 
 
 @Autonomous(name="Doug: Autonomous", group="Competition Code")
-//@Disabled
+@Disabled
 public class Auto_GameLoop_Teaching extends OpMode {
 
     private static final long pauseTimeBetweenSteps = 100;
@@ -83,19 +84,39 @@ public class Auto_GameLoop_Teaching extends OpMode {
 
     @Override
     public void init() {
+
+        telemetry.log().setCapacity(10);
+
+
+        log("Setting up hardware..");
+
+
         vuforiaHelper.initVuforia(hardwareMap);
+        log("Vuforia initialized");
+
+
         robot = new Robot(hardwareMap, true);
         autoHelper = new AutoHelper(robot);
+        log("Loading config..");
+
         config = new Config(hardwareMap.appContext);
 
+        log("Config loaded. Setting up lift..");
 
         robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.motorLift.setTargetPosition(0);
+        robot.motorLift.setPower(1);
+
+        robot.updatePID(50, 1.5, 0);
+        log("Completed Initialization. Good Luck!!!");
+
     }
 
     @Override
     public void start() {
-        //gameState =
+
         startingPosition = config.getPosition();
         speed = config.getSpeed();
     }
@@ -107,6 +128,11 @@ public class Auto_GameLoop_Teaching extends OpMode {
         handleSwingarmState();
         handleLiftState();
         handleGameState();
+    }
+
+    private void log(String msg) {
+        telemetry.log().add(msg);
+        telemetry.update();
     }
 
 
@@ -153,6 +179,10 @@ public class Auto_GameLoop_Teaching extends OpMode {
         }
     }
     private void handleGameState() {
+
+        telemetry.log().add("Current state: %s", gameState.name());
+        telemetry.update();
+
         switch (gameState){
             case Start:
                 gameState = GameState.Dropping1;

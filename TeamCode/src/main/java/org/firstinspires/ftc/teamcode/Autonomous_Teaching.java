@@ -117,7 +117,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         }
 
         //try to detect the gold mineral
-        GoldPosition state = detectGoldMineral();
+        state = detectGoldMineral();
         pause();
 
         robot.motorSwing.setTargetPosition(0);
@@ -387,13 +387,16 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         turnDegrees(TurnDirection.CLOCKWISE, turndegrees);
         pause();
 //        move fw 38"
-        driveStraight(speed, 38, 3);
+        driveStraight(speed, 36, 3);
         pause();
 //        turn CW 38+90
-        turnDegrees(TurnDirection.CLOCKWISE, turndegrees+90);
+        turnDegrees(TurnDirection.CLOCKWISE, (90 - (45 + turndegrees))+90);
         pause();
 //        move bw 30"
-        driveStraight(speed, -30, 3);
+        driveStraight(speed, -32, 3);
+        pause();
+        pause();
+        pause();
         pause();
 //        turn CCW 45
         turn45(TurnDirection.COUNTERCLOCKWISE);
@@ -405,7 +408,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         turn45(TurnDirection.COUNTERCLOCKWISE);
         pause();
 //        move bw 6*12"
-        driveStraight(1, -6*12, 10);
+        driveStraight(1, -6.7*12, 10);
 
     }
     void Gold_Center(double speed){
