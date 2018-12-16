@@ -29,9 +29,12 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
         robot.boxLeft.setPosition(0);
         robot.boxRight.setPosition(0);
 
+        robot.boot.setPosition(0);
+
         robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
@@ -207,6 +210,12 @@ public class Teleop_Teaching extends Teaching_BaseLinearOpMode implements FtcGam
     private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
         switch (button) {
 
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    robot.boot.setPosition(1);
+                } else {
+                    robot.boot.setPosition(0);
+                }
             case FtcGamePad.GAMEPAD_B:
                 if (pressed) {
                     robot.toggleLights();

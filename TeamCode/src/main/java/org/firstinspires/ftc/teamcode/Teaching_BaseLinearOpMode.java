@@ -241,12 +241,13 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
     }
 
 
-    public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees, double speed) {
+    public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees, double speed, double timeout) {
 
 
+        //330 = 3/4 of 360
         //robot.COUNTS_PER_INCH
-        final double onedegreeticks = 3.04;
-        final double WHEEL_DIAMETER_INCHES_FOR_TURNING = 3.51;
+        final double onedegreeticks = 1.207*2;
+        final double WHEEL_DIAMETER_INCHES_FOR_TURNING = 3.543;
         final double DESIRED_MOVEMENT_TICKS = onedegreeticks * degrees;
 
         //x = (312.993*90)/103
@@ -259,24 +260,24 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         if(direction == Autonomous_Teaching.TurnDirection.CLOCKWISE) {
             turnInches = -turnInches;
         }
-        PIDencoderDrive(speed, -turnInches, turnInches, 5.0);
+        PIDencoderDrive(speed, -turnInches, turnInches, timeout);
 
         //encoderDrive(speed, -turnInches, turnInches, 5.0, false);
     }
     public void turnDegrees(Autonomous_Teaching.TurnDirection direction, double degrees) {
-        turnDegrees(direction, degrees, 0.75);
+        turnDegrees(direction, degrees, 0.75, 2);
     }
 
 
     public void turn90(Autonomous_Teaching.TurnDirection direction, double speed){
-        turnDegrees(direction, 90, speed);
+        turnDegrees(direction, 90, speed, 3);
     }
     public void turn90(Autonomous_Teaching.TurnDirection direction) {
         turn90(direction, 0.75);
     }
 
     public void turn45(Autonomous_Teaching.TurnDirection direction, double speed) {
-        turnDegrees(direction, 45, speed);
+        turnDegrees(direction, 45, speed, 2);
     }
 
     public void turn45(Autonomous_Teaching.TurnDirection direction) {
@@ -323,7 +324,7 @@ public abstract class Teaching_BaseLinearOpMode extends LinearOpMode {
         robot.setPower(targetSpeed , targetSpeed);
 
         ElapsedTime timer = new ElapsedTime();
-        while(opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
+        while(opModeIsActive() && robot.isBusy(true) && timer.seconds() < timeoutSeconds) {
             idle();
         }
 

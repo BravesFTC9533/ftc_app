@@ -395,11 +395,11 @@ public class Autonomous_Main extends Teaching_BaseLinearOpMode {
                                 if(avg <= 640) {
                                     //move clockwise a bit
                                     telemetry.log().add("Turning Clockwise -->>>>");
-                                    turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 15, 1);
+                                    turnDegrees(Autonomous_Teaching.TurnDirection.CLOCKWISE, 15, 1, 1);
                                 } else {
                                     //else turn counterclockwise
                                     telemetry.log().add("Turning CounterClockwise <<<<--");
-                                    turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 15, 1);
+                                    turnDegrees(Autonomous_Teaching.TurnDirection.COUNTERCLOCKWISE, 15, 1, 1);
                                 }
                             }
                         }

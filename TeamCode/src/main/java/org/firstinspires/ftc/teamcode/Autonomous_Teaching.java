@@ -69,9 +69,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-
-
-
         // We can control the number of lines shown in the log
         telemetry.log().setCapacity(10);
 
@@ -82,27 +79,17 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
         config = new Config(hardwareMap.appContext);
-//
-////        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, NEW_P, 0, 0);
-////        robot.SetPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, NEW_P, NEW_I, NEW_D);
-//
-//
-//        PIDFCoefficients pidfrtp = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
-//        PIDFCoefficients pidfrue = ((DcMotorEx)robot.motorBackLeft).getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        telemetry.addData("RTP", "P:%2f I:%2f D:%2f F:%2f", pidfrtp.p, pidfrtp.i, pidfrtp.d, pidfrtp.f);
-//        telemetry.addData("RUE", "P:%2f I:%2f D:%2f F:%2f", pidfrue.p, pidfrue.i, pidfrue.d, pidfrue.f);
 
         robot.updatePID(config.getKP(), config.getKI(), config.getKD());
 
-        holdStartingPosition();
+
         Config.Colors color = config.getColor();
         Config.Positions position = config.getPosition();
 
 
         robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        holdStartingPosition();
 
         telemetry.log().add("Setting up vuforia");
         telemetry.update();
@@ -117,19 +104,19 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         telemetry.update();
 
 
-
-
-
         waitForStart();
 
-
-        //robot.toggleLights();
-
-        //driveStraight(1, 5*12, 1000);
+        if(!doDrop) {
+            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
+            robot.motorSwing.setPower(1);
+            while (opModeIsActive() && robot.motorSwing.isBusy()) {
+                idle();
+            }
+        }
 
         waitForDelayStart();
 
-        //pause();
 
         //Drop Down The Robot From The Lander
         if(doDrop) {
@@ -137,13 +124,14 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             pause();
         }
 
+        //try to detect the gold mineral
         detectGoldMineral();
         pause();
 
         driveStraight(speed, 6, 2);
         pause();
-
-        resetLiftAndSwing();
+        pause();
+        pause();
         pause();
 
         pushOffGoldMineral();
@@ -154,13 +142,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
 
-
-
-
-        robot.turnOffAllMotors();
-
-
-
         //TODO Add back in after gold and silver classes are working
         if(config.getPosition() == Config.Positions.GOLD) {
             Gold(speed);
@@ -168,6 +149,12 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             Silver(speed);
         }
 
+
+
+        resetLiftAndSwing();
+        pause();
+
+        robot.turnOffAllMotors();
     }
 
     private void pushOffGoldMineral() {
@@ -315,22 +302,31 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             robot.motorLift.setTargetPosition(0);
             robot.motorLift.setPower(1);
 
-            while (opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
+            while (opModeIsActive() && (robot.motorLift.isBusy() || robot.motorSwing.isBusy())) {
                 idle();
             }
         }
     }
     void dropToGround() {
+
         if(opModeIsActive()) {
             robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            robot.motorLift.setTargetPosition(3500);
+            robot.motorLift.setPower(1);
+
+            while(opModeIsActive() && robot.motorLift.isBusy()) {
+                idle();
+            }
+
             robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
             robot.motorLift.setPower(1);
 
-            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
             robot.motorSwing.setPower(config.getSwingArmPower());
 
-            while(opModeIsActive() && robot.motorLift.isBusy() && robot.motorSwing.isBusy()) {
+            while(opModeIsActive() && (robot.motorLift.isBusy() || robot.motorSwing.isBusy())) {
                 idle();
             }
 
@@ -360,43 +356,110 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         driveStraight(speed, 24, 3);
         pause();
-        driveStraight(speed, -24, 3);
 
-        //turn back to center
-        switch (gp){
-            case LEFT:
-                turnDegrees (TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
-                break;
-            case RIGHT:
-                turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
-                break;
 
-        }
+
+
+
+//        driveStraight(speed, -24, 3);
+//
+//        //turn back to center
+//        switch (gp){
+//            case LEFT:
+//                turnDegrees (TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
+//                break;
+//            case RIGHT:
+//                turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
+//                break;
+//
+//        }
 
     }
 
 
 
+    //12in, 45 turn, 42in
     void Silver(double speed) {
         //TODO Program Silver Case
     }
 
     void Gold(double speed) {
-        //TODO Program Gold Case
-        //drive close to minerals 1*12
-        driveStraight(speed, 8, 2);
-        //turn CW 90 degrees
-        turn90(TurnDirection.CLOCKWISE);
-        //drive backwards towards wall 2.75*12
-        driveStraight(speed, -33, 4);
-        //turn CCW 52 degrees
-        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 52);
-        //drive fw 4.5*12
-        driveStraight(speed, 54, 4);
-        //todo (africa): boot off trophy we bless the rains
 
-        //drive bw 6*12
-        driveStraight(speed, -72, 5);
+
+        switch(state) {
+            case RIGHT:
+                //back up a bit
+                driveStraight(speed, -6, 2);
+                pause();
+                pause();
+                pause();
+
+                //turn for large move to crater before moving to depot
+                double turn = (45 - config.get_initialTurnDegreesClockwise()) + 52;
+                turnDegrees(TurnDirection.CLOCKWISE, turn, 0.75, 5);
+                pause();
+                driveStraight(speed, -50, 6);
+                pause();
+
+
+                //turn back to depot and move towards it
+                turnDegrees(TurnDirection.COUNTERCLOCKWISE, 63, 0.75, 4);
+                pause();
+                driveStraight(speed, 25, 4);
+                pause();
+                turnDegrees(TurnDirection.CLOCKWISE, 10, 0.75, 4);
+                pause();
+                driveStraight(speed, 25, 4);
+                pause();
+
+                turnDegrees(TurnDirection.CLOCKWISE, 45);
+                pause();
+                robot.boot.setPosition(1);
+                pause();
+
+                turnDegrees(TurnDirection.COUNTERCLOCKWISE, 45);
+
+                pause();
+                driveStraight(speed, -60, 10);
+                break;
+            default:
+                return;
+
+        }
+
+
+//
+//        //drive close to minerals 1*12
+//        driveStraight(speed, 12, 2);
+//        pause();
+//        //turn CW 90 degrees
+//        turn90(TurnDirection.CLOCKWISE);
+//        pause();
+//        //drive backwards towards wall 2.75*12
+//        driveStraight(speed, -45, 4);
+//        pause();
+
+
+        //turn CCW 52 degrees
+//        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 65);
+//        pause();
+//        //drive fw 4.5*12
+//        driveStraight(speed, 54, 4);
+//        pause();
+//
+//        //turn 45 degrees and boot off trophy
+//        turnDegrees(TurnDirection.CLOCKWISE, 25);
+//        driveStraight(speed, 6, 1);
+//        turnDegrees(TurnDirection.CLOCKWISE, 20);
+//        robot.boot.setPosition(1);
+//        pause();
+//
+//        turnDegrees(TurnDirection.COUNTERCLOCKWISE, 45);
+//        pause();
+//
+//        //drive bw 6*12
+//        driveStraight(speed, -72, 5);
+//        pause();
 
     }
 
@@ -474,7 +537,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             robot.setPower(targetSpeed, targetSpeed);
 
             ElapsedTime timer = new ElapsedTime();
-            while (opModeIsActive() && robot.isBusy() && timer.seconds() < timeoutSeconds) {
+            while (opModeIsActive() && robot.isBusy(false) && timer.seconds() < timeoutSeconds) {
                 idle();
             }
 

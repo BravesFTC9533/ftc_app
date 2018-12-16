@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.Config;
@@ -38,15 +39,24 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
 
         config = new Config(hardwareMap.appContext);
 
+        NEW_P = config.getKP();
+        NEW_I = config.getKI();
+        NEW_D = config.getKD();
 
-        menu.clearOptions();
-        menu.addOption("P", 1000, 0, 0.01, NEW_P);
-        menu.addOption("I", 1000, 0, 0.01, NEW_I);
-        menu.addOption("D", 1000, 0, 0.01, NEW_D);
-        menu.addOption("Dist", 12*12, 12, 0.1, Distance);
-        menu.addOption("Kp", 1000, 0, 0.01, NEW_KP);
-        menu.setGamepad(gamepad1);
-        menu.setTelemetry(telemetry);
+        updatePID();
+        robot.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        menu.clearOptions();
+//        menu.addOption("P", 1000, 0, 0.01, NEW_P);
+//        menu.addOption("I", 1000, 0, 0.01, NEW_I);
+//        menu.addOption("D", 1000, 0, 0.01, NEW_D);
+//        menu.addOption("Dist", 12*12, 12, 0.1, Distance);
+//        menu.addOption("Kp", 1000, 0, 0.01, NEW_KP);
+//        menu.setGamepad(gamepad1);
+//        menu.setTelemetry(telemetry);
+
+
 
 
         waitForStart();
@@ -63,25 +73,30 @@ public class PIDAutoTest extends Teaching_BaseLinearOpMode {
             if(!gamepad1.start && startPressed) {
                 startPressed = false;
                 this.Kp = NEW_KP;
-                updatePID();
+                //updatePID();
 
-                drive_straight(0.75, 48);
+                //drive_straight(0.75, 48);
+
+                turn90(Autonomous_Teaching.TurnDirection.CLOCKWISE);
+
             }
 
-            menu.displayMenu();
-            NEW_P = Double.parseDouble(menu.getCurrentChoiceOf("P"));
-            NEW_I = Double.parseDouble(menu.getCurrentChoiceOf("I"));
-            NEW_D = Double.parseDouble(menu.getCurrentChoiceOf("D"));
-            NEW_KP = Double.parseDouble(menu.getCurrentChoiceOf("Kp"));
-            Distance = Double.parseDouble(menu.getCurrentChoiceOf("Dist"));
+//            menu.displayMenu();
+//            NEW_P = Double.parseDouble(menu.getCurrentChoiceOf("P"));
+//            NEW_I = Double.parseDouble(menu.getCurrentChoiceOf("I"));
+//            NEW_D = Double.parseDouble(menu.getCurrentChoiceOf("D"));
+//            NEW_KP = Double.parseDouble(menu.getCurrentChoiceOf("Kp"));
+//            Distance = Double.parseDouble(menu.getCurrentChoiceOf("Dist"));
+            telemetry.addData("POS", "%d", robot.motorBackLeft.getCurrentPosition());
+            telemetry.addData("POS", "%d", robot.motorBackRight.getCurrentPosition());
             telemetry.update();
         }
 
 
-        config.setKP(NEW_P);
-        config.setKI(NEW_I);
-        config.setKD(NEW_D);
-        config.save();
+//        config.setKP(NEW_P);
+//        config.setKI(NEW_I);
+//        config.setKD(NEW_D);
+//        config.save();
 
     }
 

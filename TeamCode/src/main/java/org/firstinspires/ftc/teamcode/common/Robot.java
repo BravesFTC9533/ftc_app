@@ -48,6 +48,7 @@ public class Robot {
 
         boxLeft = hardwareMap.servo.get("boxleft");
         boxRight = hardwareMap.servo.get("boxright");
+        boxLeft.setDirection(Servo.Direction.REVERSE);
         boot = hardwareMap.servo.get("boot");
 
 
@@ -84,6 +85,9 @@ public class Robot {
             motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
+        boot.setPosition(0);
+        boxLeft.setPosition(0);
+        boxRight.setPosition(0);
 
 
     }
@@ -193,13 +197,13 @@ public class Robot {
     }
     private boolean isBusyFourWheelDrive(boolean allMotors){
         if(allMotors) {
-            return motorFrontLeft.isBusy() ||
-                    motorFrontRight.isBusy() ||
+            return //motorFrontLeft.isBusy() ||
+                    //motorFrontRight.isBusy() ||
                     motorBackLeft.isBusy() ||
-                    motorBackRight.isBusy();// ||
+                    motorBackRight.isBusy();
         } else {
-            return motorFrontLeft.isBusy() &&
-                    motorFrontRight.isBusy() &&
+            return //motorFrontLeft.isBusy() &&
+                    //motorFrontRight.isBusy() &&
                     motorBackLeft.isBusy() &&
                     motorBackRight.isBusy();
         }
