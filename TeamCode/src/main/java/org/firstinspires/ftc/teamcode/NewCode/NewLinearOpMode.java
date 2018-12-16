@@ -148,6 +148,19 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
                     reverse = !reverse;
                 }
                 break;
+            //======================================================================================
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    if(robot.lift.getCurrentPosition() > 0) {
+                        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        robot.lift.setTargetPosition(0);
+                        robot.lift.setPower(1);
+                    } else {
+                        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        robot.lift.setTargetPosition(3500);
+                        robot.lift.setPower(1);
+                    }
+                }
         }
     }
 
