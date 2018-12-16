@@ -86,8 +86,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
                 leftPower = -gamepad1.left_stick_y;
                 rightPower = -gamepad1.right_stick_y;
             } else {
-                rightPower = -gamepad1.left_stick_y;
-                leftPower = -gamepad1.right_stick_y;
+                rightPower = gamepad1.left_stick_y;
+                leftPower = gamepad1.right_stick_y;
             }
 
             robot.fl.setPower(leftPower);
@@ -111,7 +111,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
 
 
 
-    private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed) {
+    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed) {
         switch (button) {
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if (pressed) {
@@ -142,10 +142,24 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
                     }
                 }
                 break;
+                case FtcGamePad.GAMEPAD_X:
+                    if(pressed){
+                        robot.intake.setPower(1);
+                    } else {
+                        robot.intake.setPower(0);
+                    }
+                    break;
             //======================================================================================
             case FtcGamePad.GAMEPAD_RBUMPER:
                 if(pressed) {
                     reverse = !reverse;
+                }
+                break;
+            case FtcGamePad.GAMEPAD_Y:
+                if(pressed) {
+                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.lift.setTargetPosition(0);
+                    robot.lift.setPower(1);
                 }
                 break;
             //======================================================================================
@@ -164,7 +178,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         }
     }
 
-    private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed){
+    private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed){
         switch(button) {
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if (pressed) {

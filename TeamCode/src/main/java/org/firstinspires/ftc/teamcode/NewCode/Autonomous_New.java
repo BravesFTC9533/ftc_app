@@ -61,7 +61,7 @@ import java.util.List;
  */
 
 @Autonomous(name="New: Autonomous", group="New")
-
+@Disabled
 public class Autonomous_New extends OpMode
 {
 

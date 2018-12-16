@@ -372,6 +372,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
                 Gold_Right(speed);
                 break;
             case CENTER:
+            case UNKNOWN:
                 Gold_Center(speed);
                 break;
             case LEFT:
@@ -413,25 +414,25 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     }
     void Gold_Center(double speed){
 //        move fw 56"
-        driveStraight(speed, 56, 4);
+        driveStraight(speed, 48, 4);
         pause();
 //        turn CW 90
         turn90(TurnDirection.CLOCKWISE);
         pause();
 //        move bw 9"
-        driveStraight(speed, -9, 2);
+        driveStraight(speed, -6, 2);
         pause();
 //        boot
         robot.boot.setPosition(1);
         pause();
 //        move bw 9"
-        driveStraight(speed, -9, 2);
-        pause();
+        //driveStraight(speed, -9, 2);
+        //pause();
 //        turn CCW 45
         turn45(TurnDirection.COUNTERCLOCKWISE);
         pause();
 //        move bw 60"
-        driveStraight(speed, 60, 2);
+        driveStraight(speed, -70, 10);
         pause();
 
     }
@@ -440,18 +441,20 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 //        turn CCW 38
         turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
         pause();
-//        move fw 49"
-        driveStraight(speed, 49, 4);
+//        move fw 39"
+        driveStraight(speed, 38, 4);
         pause();
 //        turn CW 45+38
         turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise() + 45);
         pause();
 //        move fw 10.5
-        driveStraight(speed, 10.5, 4);
+        driveStraight(speed, 13.5, 4);
         pause();
 //        boot
+        robot.boot.setPosition(1);
+        pause();
 //        move bw 63"
-        driveStraight(speed, -63, 4);
+        driveStraight(speed, -66, 4);
         pause();
     }
 
