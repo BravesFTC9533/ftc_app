@@ -13,7 +13,7 @@ public class Utils {
     public void toggleBox(NewLinearOpMode.Box box) {
         if(box == NewLinearOpMode.Box.LEFT) {
             if(!boxLeftPositon) {
-                robot.boxLeft.setPosition(1);
+                robot.boxLeft.setPosition(0.65);
                 boxLeftPositon = true;
             } else {
                 robot.boxLeft.setPosition(0);
@@ -21,7 +21,7 @@ public class Utils {
             }
         } else {
             if(!boxRightPosition) {
-                robot.boxRight.setPosition(1);
+                robot.boxRight.setPosition(0.65);
                 boxRightPosition = true;
             } else {
                 robot.boxRight.setPosition(0);

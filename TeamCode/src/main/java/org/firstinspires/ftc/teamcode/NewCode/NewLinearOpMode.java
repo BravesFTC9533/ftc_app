@@ -115,9 +115,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         switch (button) {
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if (pressed) {
-                    if(robot.lift.getCurrentPosition() >= 6905) {} else {
-                        robot.lift.setPower(1);
-                    }
+                    robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.lift.setPower(1);
                 } else {
                     robot.lift.setPower(0);
                 }
@@ -125,9 +124,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    if(robot.lift.getCurrentPosition() <= 0) {} else {
-                        robot.lift.setPower(-1);
-                    }
+                    robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.lift.setPower(-1);
                 } else {
                     robot.lift.setPower(0);
                 }
@@ -176,12 +174,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         switch(button) {
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if (pressed) {
-                    if(robot.lift.getCurrentPosition() >= config.getMaxLiftTicks())
-                    {
-
-                    } else {
-                        robot.lift.setPower(1);
-                    }
+                    robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.lift.setPower(1);
                 } else {
                     robot.lift.setPower(0);
                 }
@@ -189,9 +183,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(pressed) {
-                    if(robot.lift.getCurrentPosition() >= 0) {} else {
-                        robot.lift.setPower(-1);
-                    }
+                    robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.lift.setPower(-1);
                 } else {
                     robot.lift.setPower(0);
                 }
@@ -199,9 +192,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(pressed) {
-                    if(robot.swing.getCurrentPosition() >= 0) {} else {
-                        robot.swing.setPower(1);
-                    }
+                    robot.swing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.swing.setPower(1);
                 } else {
                     robot.swing.setPower(0);
                 }
@@ -209,9 +201,8 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_DPAD_RIGHT:
                 if(pressed) {
-                    if(robot.swing.getCurrentPosition() >= 824) {} else {
-                        robot.swing.setPower(-1);
-                    }
+                    robot.swing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.swing.setPower(-1);
                 } else {
                     robot.swing.setPower(0);
                 }
@@ -232,7 +223,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             case FtcGamePad.GAMEPAD_Y:
                 if(pressed) {
                     robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(3500);
+                    robot.lift.setTargetPosition(3600);
                     robot.lift.setPower(1);
 
                     while(opModeIsActive() && robot.lift.isBusy()){
@@ -256,16 +247,18 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
             //======================================================================================
             case FtcGamePad.GAMEPAD_A:
                 if(pressed) {
+                    robot.boxLeft.setPosition(0);
+                    robot.boxRight.setPosition(0);
+
                     robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.swing.setTargetPosition(20);
+                    robot.swing.setTargetPosition(5);
                     robot.swing.setPower(config.getSwingArmPower());
                     while(opModeIsActive() && robot.swing.isBusy()){
                         idle();
                     }
-                    robot.swing.setPower(0);
 
                     robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(0);
+                    robot.lift.setTargetPosition(50);
                     robot.lift.setPower(1);
 
                     while(opModeIsActive() && robot.lift.isBusy()){

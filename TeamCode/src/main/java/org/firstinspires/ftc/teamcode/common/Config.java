@@ -262,7 +262,7 @@ public class Config {
         _delayStart = sp.getFloat(DELAY_START, 0.2f);
         _speed = sp.getFloat(SPEED, 0.85f);
         _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 1000);
-        _maxSwingTicks = sp.getInt(MAX_SWING_TICKS, 128);
+        _maxSwingTicks = sp.getInt(MAX_SWING_TICKS, 250);
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
 
         boolean shouldLiftBeReverse = sp.getBoolean(LIFT_REVERSE, false);

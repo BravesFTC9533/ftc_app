@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.NewCode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -42,6 +43,7 @@ public class Robot {
 
         boxLeft = hardwareMap.servo.get("boxleft");
         boxRight = hardwareMap.servo.get("boxright");
+        boxLeft.setDirection(Servo.Direction.REVERSE);
         boot = hardwareMap.servo.get("boot");
 
         fl.setDirection(DcMotor.Direction.FORWARD);
@@ -49,6 +51,7 @@ public class Robot {
         fr.setDirection(DcMotor.Direction.REVERSE);
         br.setDirection(DcMotor.Direction.REVERSE);
         lift.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void updatePID(double p, double i, double d) {
