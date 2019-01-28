@@ -5,26 +5,23 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class SwingAndLiftController {
 
     private final Robot robot;
-
+    private final int MAX_LIFT_TICKS = 2000;
 
     public SwingAndLiftController(Robot robot) {
         this.robot = robot;
     }
 
-    public void dumpAuto() {
+    public void toggleLiftArm() {
+        // Set lift arm to run to position
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //Lift the lift to get the swing arm out of the way
-        robot.lift.setTargetPosition(-6905);
-        robot.swing.setTargetPosition(824);
-    }
+        if(robot.lift.getCurrentPosition() > 0) {
+            robot.lift.setTargetPosition(0);
+        } else {
+            robot.lift.setTargetPosition(MAX_LIFT_TICKS);
+        }
 
-    public void resetArmPosition() {
-        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.swing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        robot.swing.setTargetPosition(0);
-        robot.lift.setTargetPosition(0);
+        // Set lift motor to run using encoders
+        robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

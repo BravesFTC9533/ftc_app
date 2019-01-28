@@ -15,21 +15,15 @@ public class Robot {
     public DcMotor br = null;
 
     public DcMotor lift = null;
+    public DcMotor mineralDrop = null;
     public DcMotor swing = null;
     public DcMotor intake = null;
     public DcMotor lights = null;
 
-    public Servo boxLeft;
-    public Servo boxRight;
-    public Servo boot;
-
-    private boolean boxLeftPositon;
-    private boolean boxRightPosition;
+    public Servo objectDrop = null;
+    public Servo boot = null;
 
     public void init(HardwareMap hardwareMap) {
-
-        boxLeftPositon = false;
-        boxRightPosition = false;
 
         fl = hardwareMap.dcMotor.get("fl");
         fr = hardwareMap.dcMotor.get("fr");
@@ -40,10 +34,9 @@ public class Robot {
         swing = hardwareMap.dcMotor.get("swingarm");
         intake = hardwareMap.dcMotor.get("intake");
         lights = hardwareMap.dcMotor.get("lights");
+        mineralDrop = hardwareMap.dcMotor.get("mineral_drop");
 
-        boxLeft = hardwareMap.servo.get("boxleft");
-        boxRight = hardwareMap.servo.get("boxright");
-        boxLeft.setDirection(Servo.Direction.REVERSE);
+        objectDrop = hardwareMap.servo.get("object_drop");
         boot = hardwareMap.servo.get("boot");
 
         fl.setDirection(DcMotor.Direction.FORWARD);
