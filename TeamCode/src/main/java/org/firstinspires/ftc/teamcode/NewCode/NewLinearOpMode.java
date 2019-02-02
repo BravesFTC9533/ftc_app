@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.NewCode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -24,13 +20,13 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private SwingAndLiftController swinglift;
-
     public FtcGamePad driverGamePad;
     public FtcGamePad operatorGamePad;
 
     private boolean reverse;
 
+    private LiftController liftController;
+    private LightController lightController;
 
     private Robot robot;
     private Config config;
@@ -54,9 +50,10 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         robot.bl.setPower(leftPower);
         robot.bl.setPower(rightPower);
 
-        swinglift = new SwingAndLiftController(robot);
         config = new Config(hardwareMap.appContext);
 
+        lightController = new LightController(robot, config);
+        liftController = new LiftController(robot, config);
         driverGamePad = new FtcGamePad("driver", gamepad1, this);
         operatorGamePad = new FtcGamePad("operator", gamepad2, this);
 
@@ -88,47 +85,94 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         switch (button) {
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if (pressed) {
-                    robot.lift.setPower(1);
+                    liftController.LiftRobot(LiftController.LiftDirection.UP);
                 } else {
-                    robot.lift.setPower(0);
+                    liftController.StopRobotLift();
                 }
                 break;
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if (pressed) {
-                    robot.lift.setPower(-1);
+                    liftController.LiftRobot(LiftController.LiftDirection.DOWN);
                 } else {
-                    robot.lift.setPower(0);
+                    liftController.StopRobotLift();
                 }
                 break;
             case FtcGamePad.GAMEPAD_Y:
                 if (pressed) {
-                    robot.mineralLift.setPower(1);
+                    liftController.LiftMineralLift(LiftController.LiftDirection.UP);
                 } else {
-                    robot.lift.setPower(0);
+                    liftController.StopMineralLift();
                 }
                 break;
             case FtcGamePad.GAMEPAD_A:
                 if (pressed) {
-                    robot.mineralLift.setPower(-1);
+                    liftController.LiftMineralLift(LiftController.LiftDirection.DOWN);
                 } else {
-                    robot.lift.setPower(0);
+                    liftController.StopMineralLift();
                 }
                 break;
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                if (pressed) {
-                    if (robot.mineralBox.getPosition() == 0) {
-                        robot.mineralBox.setPosition(1);
-                    } else {
-                        robot.mineralBox.setPosition(0);
-                    }
-
+            case FtcGamePad.GAMEPAD_B:
+                if(pressed) {
+                    lightController.toggleLights();
                 }
         }
     }
 
     private void handleOperatorGamePad(FtcGamePad gamepad, int button, boolean pressed){
         switch(button) {
-
+            case FtcGamePad.GAMEPAD_DPAD_LEFT:
+                if (pressed) {
+                    liftController.LiftRobot(LiftController.LiftDirection.UP);
+                } else {
+                    liftController.StopRobotLift();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_RIGHT:
+                if (pressed) {
+                    liftController.LiftRobot(LiftController.LiftDirection.DOWN);
+                } else {
+                    liftController.StopRobotLift();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_X:
+                if (pressed) {
+                    liftController.LiftMineralLift(LiftController.LiftDirection.UP);
+                } else {
+                    liftController.StopMineralLift();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_B:
+                if (pressed) {
+                    liftController.LiftMineralLift(LiftController.LiftDirection.DOWN);
+                } else {
+                    liftController.StopMineralLift();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if (pressed) {
+                    liftController.ToggleMineralBox();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if(pressed) {
+                    liftController.SetLiftToTop();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(pressed) {
+                    liftController.SetLiftToBottom();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_Y:
+                if(pressed) {
+                    liftController.SetMineralLiftToTop();
+                }
+                break;
+            case FtcGamePad.GAMEPAD_A:
+                if(pressed) {
+                    liftController.SetMineralLiftToBottom();
+                }
+                break;
         }
     }
     @Override

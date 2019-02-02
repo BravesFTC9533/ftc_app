@@ -15,6 +15,7 @@ public class Config {
     private final String DELAY_START ="delayStart";
     private final String SPEED = "speed";
     private final String MAX_LIFT_TICKS = "maxLiftTicks";
+    private final String MAX_MINERAL_LIFT_TICKS = "maxMineralLiftTicks";
     private final String MAX_LIGHT_BRIGHTNESS = "maxBrightness";
     private final String LIFT_REVERSE = "liftReverse";
     private final String SETTINGS_NAME = "robotconfig2";
@@ -32,7 +33,6 @@ public class Config {
     private final String SWINGARM_POWER = "swingArmPower";
     private final String MAX_SWING_TICKS = "swingArmMaxTicks";
 
-
     private final String KP = "kp";
     private final String KI = "ki";
     private final String KD = "kd";
@@ -44,6 +44,7 @@ public class Config {
     private double _delayStart;
     private double _speed;
     private int _maxLiftTicks;
+    private int _maxMineralLiftTicks;
     private int _maxSwingTicks;
     private Oreantation _phoneOreantation;
     private RobotSpecs _robotSpecs;
@@ -106,6 +107,9 @@ public class Config {
         _maxLiftTicks = ticks;
     }
 
+    public int getMaxMineralLiftTicks() { return _maxMineralLiftTicks; }
+    public void setMineralLiftTicks(int ticks) { _maxMineralLiftTicks = ticks; }
+
     public double getMaxLightBrightness() { return  _maxLightBrightness;}
     public void setMaxLightBrightness(double brightness) {
         _maxLightBrightness = brightness;
@@ -148,6 +152,7 @@ public class Config {
         editor.putFloat(DELAY_START, (float)_delayStart);
         editor.putFloat(SPEED, (float)_speed);
         editor.putInt(MAX_LIFT_TICKS, _maxLiftTicks);
+        editor.putInt(MAX_MINERAL_LIFT_TICKS, _maxMineralLiftTicks);
         editor.putFloat(MAX_LIGHT_BRIGHTNESS, (float)_maxLightBrightness);
         editor.putBoolean(LIFT_REVERSE, _liftReverse == Directions.REVERSE ? true : false);
         editor.putFloat(TENSORFLOW_Y_THRESHOLD, (float) _tensorFlowYThreshold);
@@ -262,6 +267,7 @@ public class Config {
         _delayStart = sp.getFloat(DELAY_START, 0.2f);
         _speed = sp.getFloat(SPEED, 0.85f);
         _maxLiftTicks = sp.getInt(MAX_LIFT_TICKS, 1000);
+        _maxMineralLiftTicks = sp.getInt(MAX_MINERAL_LIFT_TICKS, 1000);
         _maxSwingTicks = sp.getInt(MAX_SWING_TICKS, 250);
         _maxLightBrightness = sp.getFloat(MAX_LIGHT_BRIGHTNESS, 0.5f);
 
