@@ -242,29 +242,29 @@ public class Autonomous_New extends OpMode
 
         rotation = COUNTS_PER_INCH * inches;
 
-        driveTicks(rotation, speed);
+       // driveTicks(rotation, speed);
 
     }
 
-    private void driveTicks(double ticks, double speed) {
-        robot.fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        robot.fl.setTargetPosition(robot.fl.getCurrentPosition() + (int)ticks);
-        robot.fr.setTargetPosition(robot.fr.getCurrentPosition() + (int)ticks);
-        robot.bl.setTargetPosition(robot.bl.getCurrentPosition() + (int)ticks);
-        robot.br.setTargetPosition(robot.br.getCurrentPosition() + (int)ticks);
-
-
-        robot.fl.setPower(speed);
-        robot.fr.setPower(speed);
-        robot.bl.setPower(speed);
-        robot.br.setPower(speed);
-
-
-    }
+//    private void driveTicks(double ticks, double speed) {
+//        robot.fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//
+//        robot.fl.setTargetPosition(robot.fl.getCurrentPosition() + (int)ticks);
+//        robot.fr.setTargetPosition(robot.fr.getCurrentPosition() + (int)ticks);
+//        robot.bl.setTargetPosition(robot.bl.getCurrentPosition() + (int)ticks);
+//        robot.br.setTargetPosition(robot.br.getCurrentPosition() + (int)ticks);
+//
+//
+//        robot.fl.setPower(speed);
+//        robot.fr.setPower(speed);
+//        robot.bl.setPower(speed);
+//        robot.br.setPower(speed);
+//
+//
+//    }
 
 }

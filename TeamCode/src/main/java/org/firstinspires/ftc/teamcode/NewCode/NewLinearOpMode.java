@@ -51,9 +51,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-        robot.fl.setPower(leftPower);
         robot.bl.setPower(leftPower);
-        robot.fr.setPower(rightPower);
         robot.bl.setPower(rightPower);
 
         swinglift = new SwingAndLiftController(robot);
@@ -71,7 +69,6 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
         // Reverse the motor that runs backwards when connected directly to the battery
 
         //Init servos
-        robot.boot.setPosition(0);
 
         waitForStart();
         runtime.reset();
@@ -81,7 +78,7 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Lift Encoder", robot.lift.getCurrentPosition());
-            telemetry.addData("Swing Encoder", robot.swing.getCurrentPosition());
+            telemetry.addData("Mineral Lift Encoder", robot.mineralLift.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -89,7 +86,43 @@ public class NewLinearOpMode extends LinearOpMode implements FtcGamePad.ButtonHa
 
     private void handleDriverGamepad(FtcGamePad gamepad, int button, boolean pressed) {
         switch (button) {
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if (pressed) {
+                    robot.lift.setPower(1);
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if (pressed) {
+                    robot.lift.setPower(-1);
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_Y:
+                if (pressed) {
+                    robot.mineralLift.setPower(1);
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_A:
+                if (pressed) {
+                    robot.mineralLift.setPower(-1);
+                } else {
+                    robot.lift.setPower(0);
+                }
+                break;
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if (pressed) {
+                    if (robot.mineralBox.getPosition() == 0) {
+                        robot.mineralBox.setPosition(1);
+                    } else {
+                        robot.mineralBox.setPosition(0);
+                    }
 
+                }
         }
     }
 
