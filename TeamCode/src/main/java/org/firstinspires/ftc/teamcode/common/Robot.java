@@ -22,14 +22,11 @@ public class Robot {
     public DcMotor motorBackRight = null;
 
 
-    public DcMotor motorSwing = null;
+    public DcMotor mineralLift = null;
     public DcMotor lights = null;
     public DcMotor motorIntake = null;
     public DcMotor motorLift = null;
 
-    public Servo boxLeft;
-    public Servo boxRight;
-    public Servo boot;
 
     private final boolean fourWheelDrive;
 
@@ -44,20 +41,13 @@ public class Robot {
 
         motorLift = hardwareMap.dcMotor.get("lift");
         motorIntake = hardwareMap.dcMotor.get("intake");
-        motorSwing = hardwareMap.dcMotor.get("swingarm");
-
-        boxLeft = hardwareMap.servo.get("boxleft");
-        boxRight = hardwareMap.servo.get("boxright");
-        boxLeft.setDirection(Servo.Direction.REVERSE);
-        boot = hardwareMap.servo.get("boot");
-
-
+        mineralLift = hardwareMap.dcMotor.get("mineralLift");
 
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorSwing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mineralLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
@@ -85,9 +75,6 @@ public class Robot {
             motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        boot.setPosition(0);
-        boxLeft.setPosition(0);
-        boxRight.setPosition(0);
 
 
     }
@@ -125,22 +112,6 @@ public class Robot {
 
     }
 
-    //TODO Fix toggle for Left and Right (Still Not Working)
-    public void toggleBoxLeft () {
-        if(boxLeft.getPosition() >= 0.0) {
-            boxLeft.setPosition(0);
-        } else if(boxLeft.getPosition() < 0.5) {
-            boxLeft.setPosition(0.5);
-        }
-    }
-
-    public void toggleBoxRight() {
-        if(boxRight.getPosition() >= 0.0) {
-            boxRight.setPosition(0);
-        } else if(boxRight.getPosition() < 0.5) {
-            boxRight.setPosition(0.5);
-        }
-    }
 
     public Quad<Integer, Integer, Integer, Integer> setNewPositionFourWheel(double inches){
         return  setNewPositionFourWheel(inches, inches, inches, inches);
@@ -291,7 +262,7 @@ public class Robot {
 
     public void turnOffAllMotors() {
         stop();
-        motorSwing.setPower(0);
+        mineralLift.setPower(0);
         motorLift.setPower(0);
         motorIntake.setPower(0);
         lights.setPower(0);

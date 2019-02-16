@@ -75,7 +75,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
         telemetry.log().add("Setting up hardware");
         telemetry.update();
-        Initialize(hardwareMap, true); //Four wheel drive is true meaning that it will run a four wheel drive
+        Initialize(hardwareMap, false); //Four wheel drive is true meaning that it will run a four wheel drive
         setDrive(new GTADrive(robot, driverGamePad)); //That sets the robot into GTA mode
 
         config = new Config(hardwareMap.appContext);
@@ -88,7 +88,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
         robot.motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.motorSwing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.mineralLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         holdStartingPosition();
 
         telemetry.log().add("Setting up vuforia");
@@ -111,16 +111,12 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
         //Drop Down The Robot From The Lander
-        if(doDrop) {
-            dropToGround();
-            pause();
-        }
+        dropToGround();
+        pause();
 
         //try to detect the gold mineral
         state = detectGoldMineral();
         pause();
-
-        robot.motorSwing.setTargetPosition(0);
 
         //move off lander
         driveStraight(speed, 6, 2);
@@ -130,27 +126,19 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         pause();
         pause();
 
-
-        //TODO Add back in after gold and silver classes are working
-        if(config.getPosition() == Config.Positions.GOLD) {
-            Gold(speed);
-        } else if(config.getPosition() == Config.Positions.SILVER) {
-            Silver(speed);
+        switch(config.getPosition()) {
+            case GOLD:
+                PushOffGoldObject(speed, Config.Positions.GOLD);
+                break;
+            case SILVER:
+                PushOffGoldObject(speed, Config.Positions.SILVER);
+                break;
         }
 
         resetLiftAndSwing();
         pause();
 
         robot.turnOffAllMotors();
-    }
-
-    private void pushOffGoldMineral() {
-        //Turn On The Intake Motor In Reverse To Push Away The Gold Object
-        robot.motorIntake.setPower(-1);
-        //Drive Into The Gold Object and Back
-        PushOffGoldObject(config.getSpeed(), state);
-        //Turn Off The Intake Motor
-        robot.motorIntake.setPower(0);
     }
 
     private GoldPosition detectGoldMineral() {
@@ -283,15 +271,11 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     void resetLiftAndSwing() {
         if(opModeIsActive()) {
 
-            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.motorSwing.setTargetPosition(0);
-            robot.motorSwing.setPower(1);
-
             robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.motorLift.setTargetPosition(0);
             robot.motorLift.setPower(1);
 
-            while (opModeIsActive() && (robot.motorLift.isBusy() || robot.motorSwing.isBusy())) {
+            while (opModeIsActive() && (robot.motorLift.isBusy())) {
                 idle();
             }
         }
@@ -299,10 +283,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
     void dropToGround() {
 
         if(opModeIsActive()) {
-            robot.motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.motorSwing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            robot.motorLift.setTargetPosition(3500);
+            robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
             robot.motorLift.setPower(1);
 
             while(opModeIsActive() && robot.motorLift.isBusy()) {
@@ -312,75 +293,32 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
             robot.motorLift.setTargetPosition(config.getMaxLiftTicks());
             robot.motorLift.setPower(1);
 
-            robot.motorSwing.setTargetPosition(config.getMaxSwingTicks() / 2);
-            robot.motorSwing.setPower(config.getSwingArmPower());
-
-            while(opModeIsActive() && (robot.motorLift.isBusy() || robot.motorSwing.isBusy())) {
+            while(opModeIsActive() && (robot.motorLift.isBusy())) {
                 idle();
             }
 
         }
     }
 
-    void PushOffGoldObject(double speed, GoldPosition gp) {
+    void PushOffGoldObject(double speed, Config.Positions positions) {
 
-
-
-        switch (gp){
-            case LEFT:
-                telemetry.log().add("Gold Position Is In The Left Position");
-                turnDegrees (TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
-                break;
-            case RIGHT:
-                telemetry.log().add("Gold Position Is In The Right Position");
-                turnDegrees(TurnDirection.CLOCKWISE, config.get_initialTurnDegreesClockwise());
-                break;
-            case CENTER:
-                telemetry.log().add("Gold Position Is In The Center Position");
-                break;
-            case UNKNOWN:
-                telemetry.log().add("Could Not Find Gold Block Driving Straight! :(");
-                break;
-        }
-
-        driveStraight(speed, 24, 3);
-        pause();
-
-
-
-
-
-//        driveStraight(speed, -24, 3);
-//
-//        //turn back to center
-//        switch (gp){
-//            case LEFT:
-//                turnDegrees (TurnDirection.CLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
-//                break;
-//            case RIGHT:
-//                turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesClockwise());
-//                break;
-//
-//        }
-
-    }
-
-
-    void Gold(double speed){
         switch (state){
             case RIGHT:
-                Gold_Right(speed);
+                Gold_Right(speed, positions);
                 break;
             case CENTER:
             case UNKNOWN:
-                Gold_Center(speed);
+                Gold_Center(speed, positions);
                 break;
             case LEFT:
-                Gold_Left(speed);
+                Gold_Left(speed, positions);
                 break;
         }
+
     }
-    void Gold_Right(double speed){
+
+
+    void Gold_Right(double speed, Config.Positions positions){
 
         double turndegrees = config.get_initialTurnDegreesClockwise();
 //        move out 6"
@@ -403,7 +341,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         turn45(TurnDirection.COUNTERCLOCKWISE);
         pause();
 //        boot
-        robot.boot.setPosition(1);
         pause();
 //        turn ccw 45
         turn45(TurnDirection.COUNTERCLOCKWISE);
@@ -412,7 +349,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         driveStraight(1, -6.7*12, 10);
 
     }
-    void Gold_Center(double speed){
+    void Gold_Center(double speed, Config.Positions positions){
 //        move fw 56"
         driveStraight(speed, 48, 4);
         pause();
@@ -423,7 +360,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         driveStraight(speed, -6, 2);
         pause();
 //        boot
-        robot.boot.setPosition(1);
         pause();
 //        move bw 9"
         //driveStraight(speed, -9, 2);
@@ -436,7 +372,7 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         pause();
 
     }
-    void Gold_Left(double speed) {
+    void Gold_Left(double speed, Config.Positions positions) {
 //
 //        turn CCW 38
         turnDegrees(TurnDirection.COUNTERCLOCKWISE, config.get_initialTurnDegreesCounterClockwise());
@@ -451,7 +387,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
         driveStraight(speed, 13.5, 4);
         pause();
 //        boot
-        robot.boot.setPosition(1);
         pause();
 //        move bw 63"
         driveStraight(speed, -66, 4);
@@ -460,10 +395,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
 
 
-    //12in, 45 turn, 42in
-    void Silver(double speed) {
-        //TODO Program Silver Case
-    }
 
 
 
@@ -498,7 +429,6 @@ public class Autonomous_Teaching extends Teaching_BaseLinearOpMode {
 
                 turnDegrees(TurnDirection.CLOCKWISE, 45);
                 pause();
-                robot.boot.setPosition(1);
                 pause();
 
                 turnDegrees(TurnDirection.COUNTERCLOCKWISE, 45);
